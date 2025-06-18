@@ -2,6 +2,7 @@ import {Navbar,NavbarBrand,NavbarContent,NavbarItem,Link,Input,DropdownItem,Drop
 from "@heroui/react";
 import React from "react";
 import { useSelector } from "react-redux";
+import { Link as RouterLink } from "react-router";
 export const AcmeLogo = () => {
     return (
       <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -79,8 +80,10 @@ export const AcmeLogo = () => {
       <Navbar isBordered>
         <NavbarContent justify="start">
           <NavbarBrand className="mr-4">
-            <AcmeLogo />
-            <p className="hidden sm:block font-bold text-inherit">DevTinder</p>
+            <RouterLink to="/" className="flex items-center gap-2">
+              <AcmeLogo />
+              <p className="hidden sm:block font-bold text-inherit">DevTinder</p>
+            </RouterLink>
           </NavbarBrand>
           <NavbarContent className="hidden sm:flex gap-3">
             {navigationItems.map((item) => (
@@ -125,10 +128,13 @@ export const AcmeLogo = () => {
                 <p className="font-semibold">Signed in as</p>
                 <p className="font-semibold">zoey@example.com</p>
               </DropdownItem>
-              <DropdownItem key="settings">My Settings</DropdownItem>
+              
+              <DropdownItem key="settings">
+                <RouterLink to="/profile" className="block w-full">
+                  Profile
+                </RouterLink>
+              </DropdownItem>
               <DropdownItem key="team_settings">Team Settings</DropdownItem>
-              <DropdownItem key="analytics">Analytics</DropdownItem>
-              <DropdownItem key="system">System</DropdownItem>
               <DropdownItem key="configurations">Configurations</DropdownItem>
               <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
               <DropdownItem key="logout" color="danger">
