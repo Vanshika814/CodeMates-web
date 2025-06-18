@@ -1,8 +1,11 @@
 import {Navbar,NavbarBrand,NavbarContent,NavbarItem,Link,Input,DropdownItem,DropdownTrigger,Dropdown,DropdownMenu,Avatar,}
 from "@heroui/react";
 import React from "react";
-import { useSelector } from "react-redux";
-import { Link as RouterLink } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, Link as RouterLink, useNavigate } from "react-router";
+import { BASE_URL } from "../utils/constants";
+import { removeUser } from "../utils/userSlice";
+import axios from 'axios';
 export const AcmeLogo = () => {
     return (
       <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -74,7 +77,17 @@ export const AcmeLogo = () => {
   const MainNavbar = () => {
 
     const user = useSelector((store) => store.user);
-    console.log(user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const handlelogout = async () => {
+      try{
+        await axios.post(BASE_URL + "/logout", {}, {withCredentials: true});
+        dispatch(removeUser());
+        return navigate("/login")
+      } catch(err) {
+        console.error(err);
+      };
+    };
 
     return (
       <Navbar isBordered>
@@ -137,7 +150,10 @@ export const AcmeLogo = () => {
               <DropdownItem key="team_settings">Team Settings</DropdownItem>
               <DropdownItem key="configurations">Configurations</DropdownItem>
               <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-              <DropdownItem key="logout" color="danger">
+              <DropdownItem 
+              key="logout" 
+              color="danger"
+              onClick={handlelogout}>
                 Log Out
               </DropdownItem>
             </DropdownMenu>
