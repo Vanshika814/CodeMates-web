@@ -1,19 +1,8 @@
-import {
-    Navbar,
-    NavbarBrand,
-    NavbarContent,
-    NavbarItem,
-    Link,
-    Input,
-    DropdownItem,
-    DropdownTrigger,
-    Dropdown,
-    DropdownMenu,
-    Avatar,
-  } from "@heroui/react";
-  import React from "react";
-  
-  export const AcmeLogo = () => {
+import {Navbar,NavbarBrand,NavbarContent,NavbarItem,Link,Input,DropdownItem,DropdownTrigger,Dropdown,DropdownMenu,Avatar,}
+from "@heroui/react";
+import React from "react";
+import { useSelector } from "react-redux";
+export const AcmeLogo = () => {
     return (
       <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
         <path
@@ -82,12 +71,16 @@ import {
   
   // Change from named export to default export
   const MainNavbar = () => {
+
+    const user = useSelector((store) => store.user);
+    console.log(user);
+
     return (
       <Navbar isBordered>
         <NavbarContent justify="start">
           <NavbarBrand className="mr-4">
             <AcmeLogo />
-            <p className="hidden sm:block font-bold text-inherit">ACME</p>
+            <p className="hidden sm:block font-bold text-inherit">DevTinder</p>
           </NavbarBrand>
           <NavbarContent className="hidden sm:flex gap-3">
             {navigationItems.map((item) => (
@@ -114,16 +107,17 @@ import {
             startContent={<SearchIcon size={18} />}
             type="search"
           />
-          <Dropdown placement="bottom-end">
+          {user && (<Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Avatar
                 isBordered
                 as="button"
                 className="transition-transform"
                 color="secondary"
-                name="Jason Hughes"
+                name={user.FirstName}
                 size="sm"
-                src="https://img.heroui.chat/image/avatar?w=150&h=150&u=a042581f4e29026704d"
+                alt="user photo"
+                src={user.photoUrl}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -141,14 +135,14 @@ import {
                 Log Out
               </DropdownItem>
             </DropdownMenu>
-          </Dropdown>
+          </Dropdown>)}
         </NavbarContent>
       </Navbar>
     );
   };
   
   // Export MainNavbar as the default export
-  export default MainNavbar;
+  
   
   // Keep these as named exports
   export const SearchInput = () => {
@@ -170,6 +164,7 @@ import {
   };
   
   export const ProfileDropdown = () => {
+    const user = useSelector((store) => store.user);
     return (
       <Dropdown placement="bottom-end">
         <DropdownTrigger>
@@ -180,7 +175,8 @@ import {
             color="secondary"
             name="Jason Hughes"
             size="sm"
-            src="https://img.heroui.chat/image/avatar?w=150&h=150&u=a042581f4e29026704d"
+            alt="user photo"
+            src={user.photoUrl}
           />
         </DropdownTrigger>
         <DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -197,3 +193,5 @@ import {
       </Dropdown>
     );
   };
+
+export default MainNavbar;
