@@ -147,8 +147,15 @@ export const AcmeLogo = () => {
                   Profile
                 </RouterLink>
               </DropdownItem>
-              <DropdownItem key="team_settings">Team Settings</DropdownItem>
-              <DropdownItem key="configurations">Configurations</DropdownItem>
+              <DropdownItem key="team_settings">
+                <RouterLink to="/connections" className="block w-full">
+                  Connections
+                </RouterLink>
+              </DropdownItem>
+              <DropdownItem key="configurations">
+                <RouterLink to="/requests" className="block w-full">
+                  Requests
+                </RouterLink></DropdownItem>
               <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
               <DropdownItem 
               key="logout" 
