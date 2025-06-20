@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { BASE_URL } from '../utils/constants'
 import { useDispatch, useSelector } from 'react-redux'
-import { addrequest } from '../utils/requestsSlice'
+import { addrequest, removerequest } from '../utils/requestsSlice'
 import { Button } from "@heroui/react";
 
 // Tick icon
@@ -41,6 +41,15 @@ const CrossIcon = ({ fill = "currentColor", size = 24, ...props }) => (
 const Requests = () => {
     const requests = useSelector((store) => store.request);
     const dispatch = useDispatch();
+
+    const reviewRequest = async(status, _id) =>{
+        try{
+            const res = await axios.post(BASE_URL + "/request/review/" + status + "/" + _id,{}, {withCredentials:true});
+            dispatch(removerequest(_id));
+        } catch(err) {
+            console.err("Error fetching connections:", err.message)
+        }
+    }
  
     const  fetchRequests = async() => {
         try{
@@ -90,6 +99,7 @@ const Requests = () => {
                   aria-label="Accept Request"
                   color="success"
                   variant="solid"
+                  onPress={() => reviewRequest("accepted", request._id)}
                 >
                   <TickIcon />
                 </Button>
@@ -98,6 +108,7 @@ const Requests = () => {
                   aria-label="Reject Request"
                   color="danger"
                   variant="solid"
+                  onPress={() => reviewRequest("rejected", request._id)}
                 >
                   <CrossIcon />
                 </Button>
