@@ -19,9 +19,9 @@ const EditProfile = ({ user }) => {
   const [FirstName, setFirstName] = useState(user.FirstName);
   const [LastName, setLastName] = useState(user.LastName);
   const [photoUrl, setphotoUrl] = useState(user.photoUrl);
-  const [age, setage] = useState(user.age);
-  const [gender, setgender] = useState(user.gender);
-  const [about, setabout] = useState(user.about);
+  const [age, setage] = useState(user.age || "");
+  const [gender, setgender] = useState(user.gender || "");
+  const [about, setabout] = useState(user.about || "");
   const [error, seterror] = useState("");
   const dispatch = useDispatch();
 

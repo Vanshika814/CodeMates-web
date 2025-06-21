@@ -24,8 +24,11 @@ const Feed = () => {
 
   useEffect(() => {
     getFeed();
-  },[])
+  },[]);
 
+  if(!feed) return;
+
+  // if(feed.length)
   return (
     <div>
       {feed.length > 0 ? (

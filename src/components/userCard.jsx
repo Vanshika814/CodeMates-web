@@ -1,5 +1,9 @@
 import React from 'react'
 import {Card, CardHeader, CardBody, Image, Button} from "@heroui/react";
+import axios from 'axios';
+import { BASE_URL } from '../utils/constants';
+import { useDispatch } from 'react-redux';
+import { removeuserfromFeed } from '../utils/feedSlice';
 
 export const HeartIcon = ({fill = "currentColor", filled, size, height, width, ...props}) => {
     return (
@@ -42,12 +46,23 @@ export const HeartIcon = ({fill = "currentColor", filled, size, height, width, .
       </svg>
     );
   };
-  
-  
 
 
 const UserCard = ({user}) => {
-    const {FirstName, LastName, photoUrl, age, gender, about} = user;
+    const {_id, FirstName, LastName, photoUrl, age, gender, about} = user;
+    const dispatch = useDispatch();
+
+    const handleSendRequest = async(status, userId) => {
+      try{
+        const res = await axios.post(BASE_URL+ "/request/send/" + status + "/" + userId, {}, {withCredentials: true});
+        dispatch(removeuserfromFeed(userId));
+
+
+      }catch(err) {
+        console.err("Error fetching connections:", err.message)
+      }
+    }
+
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
       <Card className="w-fit max-w-sm">
@@ -66,10 +81,21 @@ const UserCard = ({user}) => {
             src={user.photoUrl}
             />
             <div className=" absolute bottom-4 right-6 flex gap-2 z-10">
-                <Button isIconOnly aria-label="Like" color="danger">
+                <Button 
+                isIconOnly 
+                aria-label="Like" 
+                color="danger"
+                onPress={() => handleSendRequest("interested", _id)}
+                >
                 <HeartIcon filled />
                 </Button>
-                <Button isIconOnly aria-label="dislike" color="default" variant="flat">
+                <Button 
+                isIconOnly 
+                aria-label="dislike" 
+                color="default" 
+                variant="flat"
+                onPress={() => handleSendRequest("ignored", _id)}
+                >
                 <CrossIcon filled />
                 </Button>
             </div>
