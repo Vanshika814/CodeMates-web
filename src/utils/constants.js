@@ -1,1 +1,1 @@
-export const BASE_URL = "https://render.com/docs/web-services?_gl=1*dazi04*_gcl_au*NDY0MTU2MjYzLjE3NTA1OTUwNzk.*_ga*NTg1MTMzNzUyLjE3NTA1OTUwNzk.*_ga_QK9L9QJC5N*czE3NTA1OTc4MTUkbzIkZzEkdDE3NTA1OTc4MTckajU4JGwwJGgw#port-binding";
+export const BASE_URL = "https://devtinder-backend-iemz.onrender.com";
