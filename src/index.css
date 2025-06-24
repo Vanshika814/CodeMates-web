@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ensure HeroUI components work properly */
+.dark {
+  color-scheme: dark;
+}

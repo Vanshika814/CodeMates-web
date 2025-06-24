@@ -1,14 +1,19 @@
-import React from 'react'
-import EditProfile from './EditProfile'
-import { useSelector } from 'react-redux'
+import React from 'react';
+import EditProfile from './EditProfile';
+import { useUser } from '@clerk/clerk-react';
+
 const Profile = () => {
-  const user = useSelector((store) => store.user);
+  const { user, isLoaded } = useUser();
 
-  return ( user &&(
+  if (!isLoaded) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  }
+
+  return (
     <div>
-      <EditProfile user={user}/>
+      <EditProfile user={user} />
     </div>
-  ))
-}
+  );
+};
 
-export default Profile
+export default Profile;

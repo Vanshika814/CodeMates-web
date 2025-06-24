@@ -1,48 +1,28 @@
-import { Outlet, useNavigate } from 'react-router'
-import React, { useEffect } from 'react'
-import MainNavbar from './NavBar'
-import Footer from './footer'
-import axios from 'axios'
-import { useDispatch } from 'react-redux'
-import { BASE_URL } from '../utils/constants'
-import { addUser } from '../utils/userSlice'
-import { useSelector } from 'react-redux'
+import { Outlet } from 'react-router';
+import React from 'react';
+import MainNavbar from './NavBar';
+import Footer from './footer';
+import AutoSync from './AutoSync';
+import { useUser } from '@clerk/clerk-react';
 
 const Body = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const userData = useSelector((store) => store.user);
+  const { isLoaded } = useUser();
 
-
-const fetchUser = async () =>{
-  if(userData) return;
-  try{
-    const res = await axios.get(BASE_URL + "/profile/view", {
-      withCredentials: true,
-    });
-    dispatch(addUser(res.data));
-  } catch(err) {
-    if(err.status === 401){
-      navigate("/login");
-    };
-    console.error(err);
-  };
-
-};
-
-useEffect(() =>{
-    fetchUser();
-
-}, []);
-
+  // Show loading while Clerk loads
+  if (!isLoaded) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  }
 
   return (
-    <div>
-      <MainNavbar/>
-      <Outlet/>
-      <Footer/>
+    <div className="min-h-screen flex flex-col">
+      <AutoSync />
+      <MainNavbar />
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Body
+export default Body;

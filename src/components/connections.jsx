@@ -3,17 +3,23 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { BASE_URL } from '../utils/constants';
 import { addConnection } from '../utils/connectionSlice';
-
+import { useAuth } from '@clerk/clerk-react';
 
 const Connections = () => {
+  const { getToken } = useAuth(); // Get Clerk auth helper
   const connections = useSelector((store) => store.connection);
   const dispatch = useDispatch();
 
   const fetchConnections = async () => {
     try {
+      const token = await getToken(); // Get Clerk token
+
       const res = await axios.get(BASE_URL + "/user/connections", {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
       dispatch(addConnection(res.data.data));
     } catch (err) {
       console.error("Error fetching connections:", err.message);
@@ -37,14 +43,11 @@ const Connections = () => {
             key={index}
             className='flex rounded-2xl overflow-hidden shadow-lg bg-slate-950 p-4 max-w-xl mx-auto'
           >
-            {/* Left: Image */}
             <img
               src={photoUrl}
               alt={`${FirstName} ${LastName}`}
               className='w-32 h-32 object-cover rounded-xl'
             />
-
-            {/* Right: Text Info */}
             <div className='flex flex-col justify-center ml-6 text-left'>
               <h2 className='text-xl font-semibold text-gray-800'>
                 {FirstName} {LastName}

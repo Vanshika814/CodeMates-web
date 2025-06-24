@@ -4,7 +4,7 @@ import { FaTwitter, FaYoutube, FaFacebook } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className=" text-white text-center py-6 mt-10 w-full">
+    <footer className=" text-white text-center py-6 w-full ">
       <div className="flex justify-center gap-6 mb-4">
         <a href="#" className="hover:underline">About us</a>
         <a href="#" className="hover:underline">Contact</a>
@@ -16,7 +16,7 @@ const Footer = () => {
         <a href="#"><FaYoutube /></a>
         <a href="#"><FaFacebook /></a>
       </div>
-      <p className="text-sm">&copy; 2025 - All right reserved by ACME Industries Ltd</p>
+      <p className="text-sm">&copy; 2025 - All right reserved by DevTinder</p>
     </footer>
   );
 };

@@ -14,8 +14,10 @@ import axios from 'axios';
 import { BASE_URL } from '../utils/constants';
 import { useDispatch } from 'react-redux';
 import { addUser } from '../utils/userSlice';
+import { useAuth } from '@clerk/clerk-react';
 
 const EditProfile = ({ user }) => {
+  const { getToken } = useAuth(); // Get Clerk auth helper
   const [FirstName, setFirstName] = useState(user.FirstName);
   const [LastName, setLastName] = useState(user.LastName);
   const [photoUrl, setphotoUrl] = useState(user.photoUrl);
@@ -31,6 +33,8 @@ const EditProfile = ({ user }) => {
   const SaveProfile = async () => {
     seterror("");
     try {
+      const token = await getToken(); // Get Clerk token
+
       const res = await axios.patch(
         BASE_URL + "/profile/edit",
         {
@@ -41,7 +45,11 @@ const EditProfile = ({ user }) => {
           about,
           photoUrl
         },
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       dispatch(addUser(res?.data?.data));
 

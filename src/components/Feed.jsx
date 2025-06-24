@@ -1,34 +1,40 @@
-import React, { useEffect } from 'react'
-import { BASE_URL } from '../utils/constants'
-import axios from 'axios'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from 'react';
+import { BASE_URL } from '../utils/constants';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import { addFeed } from '../utils/feedSlice';
-import UserCard from './userCard'
+import UserCard from './userCard';
+import { useAuth } from '@clerk/clerk-react';
 
 const Feed = () => {
+  const { getToken } = useAuth(); // get Clerk JWT
   const feed = useSelector((store) => store.feed);
-  
   const dispatch = useDispatch();
 
-  const getFeed = async () =>{
+  const getFeed = async () => {
     if (feed.length > 0) return;
-      try {
-        const res = await axios.get(BASE_URL + "/feed", {
-          withCredentials: true
-        });
-        dispatch(addFeed(res?.data || []));
-      } catch(err){
-        console.error("Error fetching feed:", err.message);
-      }
+
+    try {
+      const token = await getToken(); // fetch token from Clerk
+
+      const res = await axios.get(BASE_URL + "/feed", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      dispatch(addFeed(res?.data || []));
+    } catch (err) {
+      console.error("Error fetching feed:", err.message);
+    }
   };
 
   useEffect(() => {
     getFeed();
-  },[]);
+  }, []);
 
-  if(!feed) return;
+  if (!feed) return;
 
-  // if(feed.length)
   return (
     <div>
       {feed.length > 0 ? (

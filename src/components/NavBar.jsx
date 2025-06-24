@@ -1,226 +1,215 @@
-import {Navbar,NavbarBrand,NavbarContent,NavbarItem,Link,Input,DropdownItem,DropdownTrigger,Dropdown,DropdownMenu,Avatar,}
-from "@heroui/react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+  Input,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Avatar,
+} from "@heroui/react";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Navigate, Link as RouterLink, useNavigate } from "react-router";
-import { BASE_URL } from "../utils/constants";
-import { removeUser } from "../utils/userSlice";
-import axios from 'axios';
-export const AcmeLogo = () => {
-    return (
-      <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
-        <path
-          clipRule="evenodd"
-          d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-          fill="currentColor"
-          fillRule="evenodd"
-        />
-      </svg>
-    );
-  };
-  
-  export const SearchIcon = ({size = 24, strokeWidth = 1.5, width, height, ...props}) => {
-    return (
-      <svg
-        aria-hidden="true"
-        fill="none"
-        focusable="false"
-        height={height || size}
-        role="presentation"
-        viewBox="0 0 24 24"
-        width={width || size}
-        {...props}
-      >
-        <path
-          d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={strokeWidth}
-        />
-        <path
-          d="M22 22L20 20"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={strokeWidth}
-        />
-      </svg>
-    );
-  };
-  
-  // Navigation items
-  const navigationItems = [
-    { name: "Features", href: "#", color: "foreground", isActive: false },
-    { name: "Customers", href: "#", color: "secondary", isActive: true },
-    { name: "Integrations", href: "#", color: "foreground", isActive: false },
-  ];
-  
-  // Profile dropdown menu items
-  const profileMenuItems = [
-    { key: "profile", content: (
-      <div className="flex flex-col gap-1">
-        <p className="font-semibold">Signed in as</p>
-        <p className="font-semibold">zoey@example.com</p>
-      </div>
-    ), className: "h-14 gap-2" },
-    { key: "settings", content: "My Settings" },
-    { key: "team_settings", content: "Team Settings" },
-    { key: "analytics", content: "Analytics" },
-    { key: "system", content: "System" },
-    { key: "configurations", content: "Configurations" },
-    { key: "help_and_feedback", content: "Help & Feedback" },
-    { key: "logout", content: "Log Out", color: "danger" },
-  ];
-  
-  // Change from named export to default export
-  const MainNavbar = () => {
+import { Link as RouterLink, useNavigate } from "react-router";
+import { useUser, SignOutButton, SignInButton } from "@clerk/clerk-react";
 
-    const user = useSelector((store) => store.user);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const handlelogout = async () => {
-      try{
-        await axios.post(BASE_URL + "/logout", {}, {withCredentials: true});
-        dispatch(removeUser());
-        return navigate("/login")
-      } catch(err) {
-        console.error(err);
-      };
-    };
+// Logo
+export const AcmeLogo = () => (
+  <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
+    <path
+      clipRule="evenodd"
+      d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
+      fill="currentColor"
+      fillRule="evenodd"
+    />
+  </svg>
+);
 
-    return (
-      <Navbar isBordered>
-        <NavbarContent justify="start">
-          <NavbarBrand className="mr-4">
-            <RouterLink to="/" className="flex items-center gap-2">
-              <AcmeLogo />
-              <p className="hidden sm:block font-bold text-inherit">DevTinder</p>
-            </RouterLink>
-          </NavbarBrand>
-          <NavbarContent className="hidden sm:flex gap-3">
-            {navigationItems.map((item) => (
-              <NavbarItem key={item.name} isActive={item.isActive}>
-                <Link color={item.color} href={item.href}>
-                  {item.name}
-                </Link>
-              </NavbarItem>
-            ))}
-          </NavbarContent>
+// Search icon
+export const SearchIcon = ({ size = 24, strokeWidth = 1.5 }) => (
+  <svg
+    aria-hidden="true"
+    fill="none"
+    focusable="false"
+    height={size}
+    width={size}
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={strokeWidth}
+    />
+    <path
+      d="M22 22L20 20"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={strokeWidth}
+    />
+  </svg>
+);
+
+const MainNavbar = () => {
+  const { user, isLoaded, isSignedIn } = useUser();
+  const navigate = useNavigate();
+  const currentPath = window.location.pathname;
+
+  // Debug user data
+  React.useEffect(() => {
+    if (user) {
+      console.log('User object:', user);
+      console.log('User imageUrl:', user.imageUrl);
+      console.log('User profileImageUrl:', user.profileImageUrl);
+      console.log('User hasImage:', user.hasImage);
+      console.log('User fullName:', user.fullName);
+      console.log('User username:', user.username);
+      console.log('User email:', user.emailAddresses[0]?.emailAddress);
+      console.log('User externalAccounts:', user.externalAccounts);
+    }
+  }, [user]);
+
+  return (
+    <Navbar 
+      className="bg-black/95 backdrop-blur-sm border-b border-gray-800" 
+      maxWidth="full"
+      height="4rem"
+    >
+      <NavbarContent className="flex-1" justify="start">
+        {/* Logo */}
+        <NavbarBrand className="flex-grow-0">
+          <RouterLink to={isSignedIn ? "/feed" : "/"} className="flex items-center gap-2">
+            <AcmeLogo />
+            <p className="font-bold text-xl text-white">DevTinder</p>
+          </RouterLink>
+        </NavbarBrand>
+      </NavbarContent>
+
+      {/* Center Navigation */}
+      {isSignedIn && (
+        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+          <NavbarItem isActive={currentPath === '/feed'}>
+            <Link
+              as={RouterLink}
+              to="/feed"
+              color={currentPath === '/feed' ? 'secondary' : 'foreground'}
+              className="font-medium"
+            >
+              Feed
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive={currentPath === '/connections'}>
+            <Link
+              as={RouterLink}
+              to="/connections"
+              color={currentPath === '/connections' ? 'secondary' : 'foreground'}
+              className="font-medium"
+            >
+              Connections
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive={currentPath === '/requests'}>
+            <Link
+              as={RouterLink}
+              to="/requests"
+              color={currentPath === '/requests' ? 'secondary' : 'foreground'}
+              className="font-medium"
+            >
+              Requests
+            </Link>
+          </NavbarItem>
         </NavbarContent>
-  
-        <NavbarContent as="div" className="items-center" justify="end">
+      )}
+
+      {/* Right Side */}
+      <NavbarContent as="div" className="items-center" justify="end">
+        {isSignedIn && (
           <Input
             classNames={{
-              base: "max-w-full sm:max-w-[10rem] h-10",
+              base: "max-w-full sm:max-w-[16rem] h-10",
               mainWrapper: "h-full",
               input: "text-small",
               inputWrapper:
                 "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
             }}
-            placeholder="Type to search..."
+            placeholder="Type to search"
             size="sm"
             startContent={<SearchIcon size={18} />}
             type="search"
           />
-          {user && (<Dropdown placement="bottom-end">
+        )}
+
+        {!isLoaded ? (
+          <div className="animate-pulse">
+            <div className="h-8 w-8 bg-gray-600 rounded-full"></div>
+          </div>
+        ) : isSignedIn && user ? (
+          <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Avatar
                 isBordered
                 as="button"
-                className="transition-transform"
+                className="transition-transform hover:scale-105"
                 color="secondary"
-                name={user.FirstName}
+                name={user.fullName || user.username || user.emailAddresses[0]?.emailAddress}
                 size="sm"
-                alt="user photo"
-                src={user.photoUrl}
+                src={
+                  user.imageUrl || 
+                  user.profileImageUrl || 
+                  (user.hasImage ? user.imageUrl : null) ||
+                  (user.externalAccounts?.[0]?.imageUrl) ||
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName || user.username || user.emailAddresses[0]?.emailAddress || 'User')}&background=8b5cf6&color=fff&size=128`
+                }
+                showFallback
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="profile" className="h-14 gap-2">
-                <p className="font-semibold">Signed in as</p>
-                <p className="font-semibold">zoey@example.com</p>
+              <DropdownItem key="profile" className="h-14 gap-2" textValue="profile info">
+                <div className="flex flex-col">
+                  <p className="font-semibold">Signed in as</p>
+                  <p className="text-xs text-gray-500">
+                    {user.fullName || user.username || user.emailAddresses[0]?.emailAddress}
+                  </p>
+                </div>
               </DropdownItem>
-              
-              <DropdownItem key="settings">
-                <RouterLink to="/profile" className="block w-full">
+              <DropdownItem key="profile_link" textValue="profile">
+                <Link as={RouterLink} to="/profile" className="block w-full">
                   Profile
-                </RouterLink>
+                </Link>
               </DropdownItem>
-              <DropdownItem key="team_settings">
-                <RouterLink to="/connections" className="block w-full">
+              <DropdownItem key="connections_link" textValue="connections">
+                <Link as={RouterLink} to="/connections" className="block w-full">
                   Connections
-                </RouterLink>
+                </Link>
               </DropdownItem>
-              <DropdownItem key="configurations">
-                <RouterLink to="/requests" className="block w-full">
+              <DropdownItem key="requests_link" textValue="requests">
+                <Link as={RouterLink} to="/requests" className="block w-full">
                   Requests
-                </RouterLink></DropdownItem>
-              <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-              <DropdownItem 
-              key="logout" 
-              color="danger"
-              onClick={handlelogout}>
-                Log Out
+                </Link>
+              </DropdownItem>
+              <DropdownItem key="logout" color="danger" textValue="logout">
+                <SignOutButton signOutCallback={() => navigate("/")} />
               </DropdownItem>
             </DropdownMenu>
-          </Dropdown>)}
-        </NavbarContent>
-      </Navbar>
-    );
-  };
-  
-  // Export MainNavbar as the default export
-  
-  
-  // Keep these as named exports
-  export const SearchInput = () => {
-    return (
-      <Input
-        classNames={{
-          base: "max-w-full sm:max-w-[10rem] h-10",
-          mainWrapper: "h-full",
-          input: "text-small",
-          inputWrapper:
-            "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-        }}
-        placeholder="Type to search..."
-        size="sm"
-        startContent={<Icon icon="lucide:search" width={18} />}
-        type="search"
-      />
-    );
-  };
-  
-  export const ProfileDropdown = () => {
-    const user = useSelector((store) => store.user);
-    return (
-      <Dropdown placement="bottom-end">
-        <DropdownTrigger>
-          <Avatar
-            isBordered
-            as="button"
-            className="transition-transform"
-            color="secondary"
-            name="Jason Hughes"
-            size="sm"
-            alt="user photo"
-            src={user.photoUrl}
-          />
-        </DropdownTrigger>
-        <DropdownMenu aria-label="Profile Actions" variant="flat">
-          {profileMenuItems.map((item) => (
-            <DropdownItem 
-              key={item.key} 
-              className={item.className}
-              color={item.color}
-            >
-              {item.content}
-            </DropdownItem>
-          ))}
-        </DropdownMenu>
-      </Dropdown>
-    );
-  };
+          </Dropdown>
+        ) : (
+          <SignInButton 
+            mode="modal"
+            fallbackRedirectUrl="/feed"
+            signInFallbackRedirectUrl="/feed"
+          >
+            <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium">
+              Sign In
+            </button>
+          </SignInButton>
+        )}
+      </NavbarContent>
+    </Navbar>
+  );
+};
 
 export default MainNavbar;

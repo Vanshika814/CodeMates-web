@@ -1,1 +1,2 @@
-export const BASE_URL = "https://devtinder-backend-iemz.onrender.com";
+// Local backend URL
+export const BASE_URL = "http://localhost:3000";
