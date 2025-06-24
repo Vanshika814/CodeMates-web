@@ -49,8 +49,10 @@ const EditProfile = ({ user }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       );
+      console.log(res);
       dispatch(addUser(res?.data?.data));
 
       addToast({
