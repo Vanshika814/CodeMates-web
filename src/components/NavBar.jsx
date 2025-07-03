@@ -192,7 +192,7 @@ const MainNavbar = () => {
                 </Link>
               </DropdownItem>
               <DropdownItem key="logout" color="danger" textValue="logout">
-                <SignOutButton signOutCallback={() => navigate("/")} />
+                <SignOutButton signoutcallback={() => navigate("/")} /> 
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

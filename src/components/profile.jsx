@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
 import { useAuth } from "@clerk/clerk-react";
+import { useSelector, useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 
 const Profile = () => {
   const { getToken, isLoaded } = useAuth();
-  const [user, setUser] = useState(null);
+  const dispatch = useDispatch();
+  
+  // Get user from Redux store first
+  const userFromRedux = useSelector(store => store.user);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -14,7 +20,15 @@ const Profile = () => {
     const fetchUserProfile = async () => {
       if (!isLoaded) return;
 
+      // If user already exists in Redux, use that data (AutoSync should have loaded it)
+      if (userFromRedux && userFromRedux._id) {
+        setLoading(false);
+        return;
+      }
+
+      // Fallback: fetch profile if AutoSync failed or data missing
       try {
+        console.log("📋 Profile: AutoSync data not available, fetching profile...");
         setLoading(true);
         const token = await getToken();
 
@@ -23,8 +37,9 @@ const Profile = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        setUser(response.data);
+        
+        // Store user data in Redux for future use
+        dispatch(addUser(response.data));
         setError(null);
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
@@ -35,7 +50,7 @@ const Profile = () => {
     };
 
     fetchUserProfile();
-  }, [isLoaded, getToken]);
+  }, [isLoaded, getToken, userFromRedux, dispatch]);
 
   if (!isLoaded || loading) {
     return (
@@ -61,7 +76,7 @@ const Profile = () => {
     );
   }
 
-  if (!user) {
+  if (!userFromRedux) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
@@ -73,7 +88,7 @@ const Profile = () => {
 
   return (
     <div>
-      <EditProfile user={user} />
+      <EditProfile user={userFromRedux} />
     </div>
   );
 };

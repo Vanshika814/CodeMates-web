@@ -4,20 +4,22 @@ import Profile from './components/profile';
 import Feed from './components/Feed';
 import Connections from './components/connections';
 import Requests from './components/Requests';
-
+import Chat from './components/chat';
 import { Provider } from 'react-redux';
 import appStore from './utils/appStore';
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/clerk-react';
+import AutoSync from './components/AutoSync';
 
 function App() {
   return (
     <Provider store={appStore}>
       <main className="dark text-foreground-50">
         <BrowserRouter>
+          <AutoSync />
           <Routes>
-            {/* Public landing page with auth buttons */}
+            {/* Public landing page */}
             <Route
               path="/"
               element={
@@ -59,7 +61,7 @@ function App() {
               }
             />
 
-            {/* Protected Routes */}
+            {/* All protected routes under a single persistent Body wrapper */}
             <Route
               path="/*"
               element={
@@ -72,9 +74,10 @@ function App() {
               <Route path="profile" element={<Profile />} />
               <Route path="connections" element={<Connections />} />
               <Route path="requests" element={<Requests />} />
+              <Route path="chat/:targetId" element={<Chat />} />
             </Route>
 
-            {/* Redirect any unknown routes to home */}
+            {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

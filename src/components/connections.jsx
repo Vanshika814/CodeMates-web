@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BASE_URL } from '../utils/constants';
 import { addConnection } from '../utils/connectionSlice';
 import { useAuth } from '@clerk/clerk-react';
+import {Button} from "@heroui/react";
+import { Link } from "react-router";
 
 const Connections = () => {
   const { getToken } = useAuth(); // Get Clerk auth helper
@@ -32,12 +34,12 @@ const Connections = () => {
 
   if (!connections) return null;
   if (connections.length === 0)
-    return <h1 className='text-center mt-10 text-xl'>No connections found!</h1>;
+    return <h1 className='text-center mt-10 text-xl text-white'>No connections found!</h1>;
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6'>
       {connections.map((connection, index) => {
-        const { FirstName, LastName, photoUrl, about, age, gender } = connection;
+        const { _id, FirstName, LastName, photoUrl, about, age, gender } = connection;
         return (
           <div
             key={index}
@@ -55,6 +57,14 @@ const Connections = () => {
               <p className='text-sm text-gray-700 mt-1'>{about}</p>
               <p className='text-sm text-gray-600 mt-1'>{age} • {gender}</p>
             </div>
+            <Link to={"/chat/"+ _id} >
+             <Button
+                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                radius="full"
+             >
+               Button
+             </Button>
+            </Link>
           </div>
         );
       })}

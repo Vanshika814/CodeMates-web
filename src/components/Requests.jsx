@@ -61,7 +61,7 @@ const Requests = () => {
 
   if (!requests) return null;
   if (requests.length === 0)
-    return <h1 className='text-center mt-10 text-xl'>No requests found!</h1>;
+    return <h1 className='text-center mt-10 text-xl text-white'>No requests found!</h1>;
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6'>
