@@ -14,7 +14,7 @@ const AutoSync = () => {
   const userFromRedux = useSelector(store => store.user);
   
   const [retryCount, setRetryCount] = useState(0);
-  const maxRetries = 5;
+  const maxRetries = 12; // Increased for robustness
   const hasSucceededRef = useRef(false);
 
   // Reset retry count when user changes (new sign in)
@@ -22,18 +22,14 @@ const AutoSync = () => {
   
   useEffect(() => {
     if (user?.id && user.id !== prevUserIdRef.current) {
-      // Only reset if the user ID actually changed (different user signed in)
-      console.log("🔄 AutoSync: Different user detected, resetting");
       setRetryCount(0);
       hasSucceededRef.current = false;
       prevUserIdRef.current = user.id;
     }
   }, [user?.id]);
 
-  // Check if we need to reset success flag after refresh (Redux empty but user exists)
   useEffect(() => {
     if (user?.id && !userFromRedux && hasSucceededRef.current) {
-      console.log("🔄 AutoSync: Refresh detected - Redux empty but user exists, resetting success flag");
       hasSucceededRef.current = false;
       setRetryCount(0);
     }
@@ -41,65 +37,96 @@ const AutoSync = () => {
 
   useEffect(() => {
     const syncUserWithBackend = async () => {
-      console.log("🔄 AutoSync: Running sync check");
-
-      // Don't retry if already succeeded
-      if (hasSucceededRef.current) {
-        console.log("✅ AutoSync: Already succeeded, skipping");
-        return;
-      }
-
-      // More flexible waiting conditions - don't give up too early
-      if (!isLoaded) {
+      if (hasSucceededRef.current) return;
+      
+      // Debug logging
+      console.log("🔄 AutoSync Debug:", {
+        isLoaded,
+        isSignedIn,
+        hasUser: !!user,
+        userId: user?.id,
+        retryCount,
+        hasSucceeded: hasSucceededRef.current
+      });
+      
+      // Wait for Clerk to be fully loaded and user to be signed in
+      if (!isLoaded || !isSignedIn) {
         if (retryCount < maxRetries) {
           setTimeout(() => setRetryCount(prev => prev + 1), 1000);
         }
         return;
       }
-
-      if (!isSignedIn) {
-        return; // Don't retry if not signed in
-      }
-
+      
       if (!user) {
-        // Keep retrying for user object even if Clerk says it's loaded
         if (retryCount < maxRetries) {
           setTimeout(() => setRetryCount(prev => prev + 1), 1000);
         }
         return;
       }
-
+      
       try {
-        console.log("🔄 AutoSync: Fetching latest profile data...");
+        // Log Clerk state and token
+        console.log("🔍 Clerk isLoaded:", isLoaded);
+        console.log("🔍 Clerk isSignedIn:", isSignedIn);
+        console.log("🔍 Clerk user:", user);
         const token = await getToken();
-
-        // ✅ FIX: Fetch existing profile data instead of sending stale Clerk data
+        console.log("🔍 Token from Clerk:", token ? `${token.substring(0, 20)}...` : "No token");
+        
+        if (!token) {
+          // Wait and retry if token is not ready
+          if (retryCount < maxRetries) {
+            setTimeout(() => setRetryCount(prev => prev + 1), 1000);
+          }
+          return;
+        }
+        // Add a small delay to ensure token is fully propagated
+        if (retryCount === 0) {
+          console.log("⏳ First attempt - waiting 1 second for token to propagate...");
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        // Log axios headers
+        const headers = { Authorization: `Bearer ${token}` };
+        console.log("🔍 Axios headers:", headers);
+        // Try to fetch profile from backend
         const response = await axios.get(`${BASE_URL}/profile/view`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers
         });
-
-        // Store user data in Redux
         if (response.data) {
-          console.log("✅ AutoSync: Successfully loaded profile data");
+          console.log("✅ AutoSync: Profile loaded successfully");
           dispatch(addUser(response.data));
           hasSucceededRef.current = true;
         }
       } catch (error) {
-        console.error("❌ Auto-sync failed:", error);
-
-        // Retry on failure if retries available
+        console.error("❌ AutoSync Error:", error?.response?.data || error.message);
+        if (error.response) {
+          console.error("❌ Error status:", error.response.status);
+          console.error("❌ Error headers:", error.response.headers);
+          console.error("❌ Error data:", error.response.data);
+        }
+        // If 404, try to auto-sync user
+        if (error.response && error.response.status === 404) {
+          try {
+            const token = await getToken();
+            console.log("🔄 AutoSync: Attempting to create user in MongoDB...");
+            await axios.post(`${BASE_URL}/auto-sync`, {}, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            // After auto-sync, retry fetching profile
+            setTimeout(() => setRetryCount(prev => prev + 1), 500);
+            return;
+          } catch (syncErr) {
+            console.error("❌ Auto-sync failed:", syncErr?.response?.data || syncErr.message);
+          }
+        }
+        // Retry on other errors
         if (retryCount < maxRetries && !hasSucceededRef.current) {
           setTimeout(() => setRetryCount(prev => prev + 1), 2000);
         }
       }
     };
-
     syncUserWithBackend();
   }, [isSignedIn, isLoaded, user, getToken, dispatch, retryCount]);
 
-  // This component doesn't render anything
   return null;
 };
 

@@ -62,8 +62,8 @@ export const CrossIcon = ({
   );
 };
 
-const UserCard = ({ user }) => {
-  const { _id, FirstName, LastName, photoUrl, age, gender, about } = user;
+const UserCard = ({ user}) => {
+  const { _id, FirstName, LastName, age, gender, about } = user;
   const { getToken } = useAuth(); // Get Clerk auth helper
   const dispatch = useDispatch();
 
@@ -92,24 +92,24 @@ const UserCard = ({ user }) => {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <Card className="w-fit max-w-sm">
-        <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+      <Card className="w-80 h-[500px] flex flex-col">
+        <CardHeader className="pb-0 pt-2 px-4 flex-col items-start flex-shrink-0">
           <h4 className="font-bold text-large">{FirstName + " " + LastName}</h4>
           {age && gender && (
             <p className="text-tiny uppercase font-bold">
               {age + ", " + gender}
             </p>
           )}
-          <small className="text-default-500">{about}</small>
+          <small className="text-default-500 line-clamp-2">{about}</small>
         </CardHeader>
-        <CardBody className=" overflow-visible py-2 px-4 relative">
-          <div>
+        <CardBody className="overflow-visible py-2 px-4 relative flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col">
             <Image
               alt="Card photo"
-              className="object-cover rounded-xl"
+              className="object-cover rounded-xl w-full h-80 flex-shrink-0"
               src={user.photoUrl}
             />
-            <div className=" absolute bottom-4 right-6 flex gap-2 z-10">
+            <div className="absolute bottom-4 right-6 flex gap-2 z-10">
               <Button
                 isIconOnly
                 aria-label="Like"

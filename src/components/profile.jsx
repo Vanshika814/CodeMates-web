@@ -35,7 +35,7 @@ const Profile = () => {
         const response = await axios.get(BASE_URL + "/profile/view", {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
+          }, withCredentials: true
         });
         
         // Store user data in Redux for future use

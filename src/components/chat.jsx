@@ -35,7 +35,7 @@ const Chat = () => {
             const chat = await axios.get(BASE_URL + "/chat/" + targetId, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                },
+                }, withCredentials: true,
             });
 
             const chatMessages = chat?.data?.messages?.map(msg => {
@@ -68,7 +68,7 @@ const Chat = () => {
 
 
     useEffect(() => {
-        if(!userId){
+        if(!userId || !user?.FirstName){
             return;
         }
         const socket = createSocketConnection(); // as soon as the page loads this object will be called and connection will bet set
@@ -93,7 +93,7 @@ const Chat = () => {
         return () => {
             socket.disconnect();
         };
-    }, [userId, targetId])
+    }, [userId, targetId, user?.FirstName])
 
     const handleSendMessage = () => {
         if (!newMessage.trim()) return; // Don't send empty messages
@@ -115,6 +115,10 @@ const Chat = () => {
 
 
     // console.log(targetId);
+    // Add loading guard before rendering
+    if (!userId || !user?.FirstName) {
+        return <div>Loading chat...</div>;
+    }
   return (
     <Card className='w-auto h-96 mx-16 my-8 flex flex-col'>
         <CardBody className='flex flex-col h-full'>

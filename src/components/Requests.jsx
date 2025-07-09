@@ -32,7 +32,7 @@ const Requests = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
+          }, withCredentials: true,
         }
       );
       dispatch(removerequest(_id));
@@ -47,7 +47,7 @@ const Requests = () => {
       const res = await axios.get(`${BASE_URL}/user/request/received`, {
         headers: {
           Authorization: `Bearer ${token}`,
-        },
+        }, withCredentials: true,
       });
       dispatch(addrequest(res.data.data));
     } catch (err) {
