@@ -31,12 +31,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           headerTitle: 'text-2xl font-bold text-gray-900',
           headerSubtitle: 'text-gray-600',
           formButtonPrimary: 'bg-blue-600 hover:bg-blue-700 text-white',
-          formFieldInput: 'bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500',
+          formFieldInput: 'bg-white border-2 border-gray-500 text-gray-900 focus:border-blue-500 rounded-lg px-4 py-3',
           formFieldLabel: 'text-gray-700 font-medium',
           footerActionLink: 'text-blue-600 hover:text-blue-700',
           dividerLine: 'bg-gray-200',
           dividerText: 'text-gray-500',
-          socialButtonsIconButton: 'border-gray-300 hover:bg-gray-50',
+          socialButtonsIconButton: 'border-gray-500 hover:bg-gray-50',
           formFieldErrorText: 'text-red-600',
           identityPreviewText: 'text-gray-600',
           identityPreviewEditButton: 'text-blue-600 hover:text-blue-700',
@@ -46,13 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       signUpFallbackRedirectUrl="/feed"
     >
       <HeroUIProvider
-        theme={{
-          dark: {
-            colors: {
-              background: "#111827",
-            }
-          }
-        }}
+        theme="dark"
       >
         <App />
       </HeroUIProvider>

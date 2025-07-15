@@ -3,6 +3,9 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenuItem,
+  NavbarMenu,
   Link,
   Input,
   Dropdown,
@@ -27,37 +30,34 @@ export const AcmeLogo = () => (
   </svg>
 );
 
-// Search icon
-export const SearchIcon = ({ size = 24, strokeWidth = 1.5 }) => (
-  <svg
-    aria-hidden="true"
-    fill="none"
-    focusable="false"
-    height={size}
-    width={size}
-    viewBox="0 0 24 24"
-  >
-    <path
-      d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={strokeWidth}
-    />
-    <path
-      d="M22 22L20 20"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={strokeWidth}
-    />
-  </svg>
-);
-
 const MainNavbar = () => {
   const { user, isLoaded, isSignedIn } = useUser();
   const navigate = useNavigate();
   const currentPath = window.location.pathname;
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  const menuItems = [
+    {
+      label: 'Feed',
+      href: '/feed',
+      isActive: currentPath === '/feed',
+    },
+    {
+      label: 'Connections',
+      href: '/connections',
+      isActive: currentPath === '/connections',
+    },
+    {
+      label: 'Requests',
+      href: '/requests',
+      isActive: currentPath === '/requests',
+    },
+    {
+      label: 'Profile',
+      href: '/profile',
+      isActive: currentPath === '/profile',
+    },
+  ];
 
   // Debug user data
   React.useEffect(() => {
@@ -75,12 +75,31 @@ const MainNavbar = () => {
 
   return (
     <Navbar 
-      className="bg-black/95 backdrop-blur-sm border-b border-gray-800" 
+      className="bg-black/95 backdrop-blur-sm" 
       maxWidth="full"
       height="4rem"
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
     >
-      <NavbarContent className="flex-1" justify="start">
-        {/* Logo */}
+      {/* Mobile Menu Toggle - Only visible on small screens */}
+      {isSignedIn && (
+        <NavbarContent className="sm:hidden" justify="start">
+          <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
+        </NavbarContent>
+      )}
+
+      {/* Mobile Logo - Centered on mobile */}
+      <NavbarContent className="sm:hidden pr-3" justify="center">
+        <NavbarBrand>
+          <RouterLink to={isSignedIn ? "/feed" : "/"} className="flex items-center gap-2">
+            <AcmeLogo />
+            <p className="font-bold text-xl text-white">DevTinder</p>
+          </RouterLink>
+        </NavbarBrand>
+      </NavbarContent>
+
+      {/* Desktop Layout - Hidden on mobile, flex on sm and up */}
+      <NavbarContent className="hidden sm:flex gap-4" justify="start">
         <NavbarBrand className="flex-grow-0">
           <RouterLink to={isSignedIn ? "/feed" : "/"} className="flex items-center gap-2">
             <AcmeLogo />
@@ -89,7 +108,7 @@ const MainNavbar = () => {
         </NavbarBrand>
       </NavbarContent>
 
-      {/* Center Navigation */}
+      {/* Desktop Navigation - Center */}
       {isSignedIn && (
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
           <NavbarItem isActive={currentPath === '/feed'}>
@@ -125,24 +144,8 @@ const MainNavbar = () => {
         </NavbarContent>
       )}
 
-      {/* Right Side */}
+      {/* Right Side - User Profile/Auth */}
       <NavbarContent as="div" className="items-center" justify="end">
-        {isSignedIn && (
-          <Input
-            classNames={{
-              base: "max-w-full sm:max-w-[16rem] h-10",
-              mainWrapper: "h-full",
-              input: "text-small",
-              inputWrapper:
-                "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-            }}
-            placeholder="Type to search"
-            size="sm"
-            startContent={<SearchIcon size={18} />}
-            type="search"
-          />
-        )}
-
         {!isLoaded ? (
           <div className="animate-pulse">
             <div className="h-8 w-8 bg-gray-600 rounded-full"></div>
@@ -202,12 +205,35 @@ const MainNavbar = () => {
             fallbackRedirectUrl="/feed"
             signInFallbackRedirectUrl="/feed"
           >
-            <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium">
+            <button className="px-3 py-2 lg:px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium">
               Sign In
             </button>
           </SignInButton>
         )}
       </NavbarContent>
+
+      {/* Mobile Menu - Only shows when toggled on mobile */}
+      {isSignedIn && (
+        <NavbarMenu>
+          {menuItems.map((item, index) => (
+            <NavbarMenuItem key={`${item.label}-${index}`}>
+              <Link
+                as={RouterLink}
+                to={item.href}
+                className="w-full"
+                color={item.isActive ? "secondary" : "foreground"}
+                size="lg"
+                onClick={() => setIsMenuOpen(false)} // Close menu when item is clicked
+              >
+                {item.label}
+              </Link>
+            </NavbarMenuItem>
+          ))}
+          <NavbarMenuItem key="logout">
+            <SignOutButton signoutcallback={() => navigate("/")} />
+          </NavbarMenuItem>
+        </NavbarMenu>
+      )}
     </Navbar>
   );
 };

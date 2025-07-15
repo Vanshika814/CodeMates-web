@@ -2,42 +2,67 @@ import React, { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addFeed } from "../utils/feedSlice";
+import { addFeed, appendFeed, setLoading } from "../utils/feedSlice";
 import FeedUserCard from "./FeeduserCard";
 import { useAuth } from "@clerk/clerk-react";
 
 const Feed = () => {
   const { getToken } = useAuth(); // get Clerk JWT
-  const feed = useSelector((store) => store.feed);
+  const feedState = useSelector((store) => store.feed);
   const userProfile = useSelector((store) => store.user); // get user profile from Redux
   const dispatch = useDispatch();
 
-  const getFeed = async () => {
-    if (feed.length > 0) return;
+  const getFeed = async (page = 1) => {
     try {
+      dispatch(setLoading(true));
       const token = await getToken(); // fetch token from Clerk
-      console.log("📡 Fetching feed...");
+      console.log(`📡 Fetching feed page ${page}...`);
       const res = await axios.get(BASE_URL + "/feed", {
         headers: {
           Authorization: `Bearer ${token}`,
-        }, withCredentials: true,
+        },
+        params: {
+          page: page,
+          limit: 10
+        },
+        withCredentials: true,
       });
       console.log("📋 Feed response:", res.data);
       console.log("👥 Number of users in feed:", res.data?.length || 0);
-      dispatch(addFeed(res?.data || []));
+      
+      if (page === 1) {
+        dispatch(addFeed(res?.data || []));
+      } else {
+        dispatch(appendFeed(res?.data || []));
+      }
     } catch (err) {
       console.error(
         "❌ Error fetching feed:",
         err?.response?.data || err.message
       );
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  const loadMoreUsers = async () => {
+    if (feedState.hasMore && !feedState.isLoading) {
+      await getFeed(feedState.currentPage + 1);
     }
   };
 
   useEffect(() => {
-    if (userProfile && userProfile._id) {
+    if (userProfile && userProfile._id && feedState.users.length === 0) {
       getFeed();
     }
   }, [userProfile]);
+
+  // Auto-load more users when running low
+  useEffect(() => {
+    if (feedState.users.length <= 2 && feedState.hasMore && !feedState.isLoading) {
+      loadMoreUsers();
+    }
+  }, [feedState.users.length, feedState.hasMore, feedState.isLoading]);
 
   if (!userProfile || !userProfile._id)
     return (
@@ -46,14 +71,14 @@ const Feed = () => {
       </div>
     );
 
-  if (!feed)
+  if (!feedState.users)
     return (
       <div className="flex justify-center items-center min-h-screen">
         Loading...
       </div>
     );
 
-  if (feed.length === 0) {
+  if (feedState.users.length === 0 && !feedState.isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
@@ -62,19 +87,34 @@ const Feed = () => {
             Either all users have been swiped or no other users exist
           </p>
           <button
-            onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+            onClick={() => getFeed(1)}
+            className="mt-4 px-4 py-2 bg-purple-500 text-white rounded"
           >
-            Refresh
+            Refresh Feed
           </button>
         </div>
       </div>
     );
   }
 
+  if (feedState.isLoading && feedState.users.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Loading users...
+      </div>
+    );
+  }
+
   return (
     <div>
-      <FeedUserCard user={feed[0]} variant="feed" />
+      {feedState.users.length > 0 && (
+        <FeedUserCard user={feedState.users[0]} variant="feed" />
+      )}
+      {feedState.isLoading && (
+        <div className="text-center mt-4 text-white">
+          Loading more users...
+        </div>
+      )}
     </div>
   );
 };

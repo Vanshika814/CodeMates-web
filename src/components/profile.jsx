@@ -87,7 +87,7 @@ const Profile = () => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen">
       <EditProfile user={userFromRedux} />
     </div>
   );

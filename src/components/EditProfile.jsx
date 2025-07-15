@@ -9,7 +9,8 @@ import {
   addToast,
   Autocomplete, AutocompleteItem,
   Tabs, Tab,
-  Select, SelectItem,
+  Select, SelectItem, 
+  Textarea
 } from "@heroui/react";
 import axios from 'axios';
 import { BASE_URL } from '../utils/constants';
@@ -20,6 +21,8 @@ import Project from './project';
 import { bioPrompts } from '../utils/bioPrompts';
 import { AVAILABILITY_OPTIONS } from "../utils/constants";
 import ProfileUserCard from './ProfileUserCard';
+import { skillOptions } from '../utils/skillOptions';
+import { FaEnvelope, FaGithub, FaLinkedin, FaGlobe, FaTwitter } from 'react-icons/fa';
 
 const EditProfile = ({ user }) => {
   const { getToken } = useAuth();
@@ -47,14 +50,18 @@ const EditProfile = ({ user }) => {
   const [availability, setAvailability] = useState(user.availability?.openTo || []);
   const [skills, setSkills] = useState(user.skills || []);
   const [prompt, setPrompt] = useState(
-    user.bioAnswers && user.bioAnswers[0] ? user.bioAnswers[0].prompt : bioPrompts[0]?.key || ''
+    user.bioAnswers && user.bioAnswers[0] 
+      ? bioPrompts.find(p => p.label === user.bioAnswers[0].prompt)?.key || bioPrompts[0]?.key || ''
+      : (bioPrompts[0]?.key || '')
   );
   const [answer, setAnswer] = useState(
     user.bioAnswers && user.bioAnswers[0] ? user.bioAnswers[0].answer : ''
   );
   useEffect(() => {
     if (user.bioAnswers && user.bioAnswers[0]) {
-      setPrompt(user.bioAnswers[0].prompt);
+      // Find the key based on the stored label
+      const foundPrompt = bioPrompts.find(p => p.label === user.bioAnswers[0].prompt);
+      setPrompt(foundPrompt?.key || bioPrompts[0]?.key || '');
       setAnswer(user.bioAnswers[0].answer);
     }
   }, [user]);
@@ -85,7 +92,7 @@ const EditProfile = ({ user }) => {
           skills,
           bioAnswers: [
             {
-              prompt,
+              prompt: bioPrompts.find(p => p.key === prompt)?.label || prompt,
               answer
             }
           ]
@@ -104,7 +111,6 @@ const EditProfile = ({ user }) => {
         description: "Profile updated successfully",
         color: "success",
       });
-      console.log(github, linkedin, twitter);
     } catch (err) {
       seterror(err?.response?.data || "Something went wrong");
     }
@@ -115,8 +121,14 @@ const EditProfile = ({ user }) => {
       <ToastProvider placement={placement} toastOffset={placement.includes("top") ? 60 : 0} />
 
       <div className="flex gap-3 justify-center items-start">
-        <ProfileUserCard user={{ FirstName, LastName, age, gender, about, photoUrl, socialLinks: { github, linkedin, twitter }, location: location.city + ", " + location.country }} /> 
-        <Card className="w-3/5 mx-2 my-16 pt-0 h-3/4">
+        <ProfileUserCard 
+          user={{ FirstName, LastName, age, gender, about, photoUrl, socialLinks: { github, linkedin, twitter }, location: location.city + ", " + location.country }} 
+          isEditing={true}
+          onImageUpload={(newUrl) => {
+            setPhotoUrl(newUrl);
+          }}
+        /> 
+        <Card className="w-3/5 mx-2 mt-8 p-4 min-h-[600px]">
           <CardBody className='pt-0 '>
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-2xl font-bold p-3">
@@ -131,6 +143,7 @@ const EditProfile = ({ user }) => {
                   onSelectionChange={setActiveTab}
                   variant="light"
                   size="md"
+                  color='secondary'
                 >
                   <Tab key="about" title="About" />
                   <Tab key="projects" title="Projects" />
@@ -141,132 +154,143 @@ const EditProfile = ({ user }) => {
 
             {/* Tab Content */}
             {activeTab === "about" && (
-              <Form className="w-full max-w-xs flex flex-col items-center gap-4">
-                <Input
-                  isRequired
-                  errorMessage="Please enter a valid First Name"
-                  label="First Name"
-                  labelPlacement="outside"
-                  placeholder="Please enter your First Name"
-                  value={FirstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full"
-                />
-                <Input
-                  errorMessage="Please enter a valid Last Name"
-                  label="Last Name"
-                  labelPlacement="outside"
-                  placeholder="Please enter your Last Name"
-                  value={LastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="w-full"
-                />
-                <Input
-                  isRequired
-                  errorMessage="Please enter a valid age"
-                  label="Age"
-                  labelPlacement="outside"
-                  placeholder="Please enter your Age"
-                  value={age}
-                  onChange={(e) => setage(e.target.value)}
-                  className="w-full"
-                />
-                <Input
-                  isRequired
-                  errorMessage="Please enter a valid photo url"
-                  label="Photo URL"
-                  labelPlacement="outside"
-                  placeholder="Please enter your Photo URL"
-                  value={photoUrl}
-                  onChange={(e) => setPhotoUrl(e.target.value)}
-                  className="w-full"
-                />
-                <Autocomplete
-                  className="w-full"
-                  label="Gender"
-                  labelPlacement="outside"
-                  placeholder="Select your gender"
-                  selectedKey={gender}
-                  onSelectionChange={(key) => setgender(key)}
-                  defaultItems={[
-                    { label: "Male", key: "male" },
-                    { label: "Female", key: "female" },
-                    { label: "Other", key: "other" },
-                  ]}
-                  isRequired
-                >
-                  {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
-                </Autocomplete>
-                <Input
+              <Form className="w-full flex flex-col items-center gap-4">
+                <Textarea
                   isRequired
                   errorMessage="Please enter a valid about"
-                  label="About"
-                  labelPlacement="outside"
-                  placeholder="Tell us about yourself"
+                  variant='underlined'
+                  placeholder="Tell us about yourself..."
                   value={about}
                   onChange={(e) => setabout(e.target.value)}
                   className="w-full"
                 />
-                <Input
-                  isRequired
-                  errorMessage="Please enter a valid skills"
-                  label="Skills"
-                  labelPlacement="outside"
-                  placeholder="Enter your skills"
-                  value={skills}
-                  onChange={(e) => setSkills(e.target.value)}
-                  className="w-full"
-                />
-                <Select
-                  isRequired
-                  className="max-w-xs"
-                  items={bioPrompts}
-                  label="Prompt"
-                  labelPlacement="outside"
-                  placeholder="Select a prompt"
-                  selectedKey={prompt}
-                  onSelectionChange={(key) => {
-                    if (typeof key === 'string') setPrompt(key);
-                    else if (key && typeof key === 'object') setPrompt(key.key || key.currentKey);
-                  }}
-                >
-                  {bioPrompts.map((promptObj) => (
-                    <SelectItem key={promptObj.key} value={promptObj.key}>
-                      {promptObj.label}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Input
-                  isRequired
-                  errorMessage="Please enter a valid answer"
-                  label="Answer"
-                  labelPlacement="outside"
-                  placeholder="Enter your answer"
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  className="w-full"
-                />
-                <Select
-                  className="w-full"
-                  label="Availability"
-                  labelPlacement="outside"
-                  placeholder="Select your availability"
-                  selectedKeys={new Set(availability.map(k => typeof k === 'string' ? k : k.key || k.currentKey))}
-                  onSelectionChange={(keys) => {
-                    if (Array.isArray(keys) || keys instanceof Set) {
-                      setAvailability(Array.from(keys).map(k => typeof k === 'string' ? k : k.key || k.currentKey));
-                    } else if (typeof keys === 'object' && keys !== null) {
-                      setAvailability([keys.key || keys.currentKey]);
-                    } else {
-                      setAvailability([keys]);
-                    }
-                  }}
-                  isRequired
-                >
-                  {AVAILABILITY_OPTIONS.map(option => (
-                    <SelectItem key={option.key}>{option.label}</SelectItem>
-                  ))}
-                </Select>
+                <div className='w-full mb-4'>
+                  <h3 className=' font-bold mb-4'>Personal Information</h3>
+                  <div className='w-full grid grid-cols-2 gap-4'>
+                  
+                    <Input
+                      isRequired
+                      errorMessage="Please enter a valid First Name"
+                      label="First Name"
+                      color='default'
+                      size='lg'
+                      value={FirstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="w-full"
+                    />
+                    <Input
+                      errorMessage="Please enter a valid Last Name"
+                      label="Last Name"
+                      color='default'
+                      size='lg'
+                      value={LastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="w-full"
+                    />
+                    <Input
+                      isRequired
+                      errorMessage="Please enter a valid age"
+                      label="Age"
+                      color='default'
+                      size='lg'
+                      value={age}
+                      onChange={(e) => setage(e.target.value)}
+                      className="w-full"
+                    />
+                    <Autocomplete
+                      className="w-full"
+                      label="Gender"
+                      color='default'
+                      size='lg'
+                      selectedKey={gender}
+                      onSelectionChange={(key) => setgender(key)}
+                      defaultItems={[
+                        { label: "Male", key: "male" },
+                        { label: "Female", key: "female" },
+                        { label: "Other", key: "other" },
+                      ]}
+                      isRequired
+                    >
+                      {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
+                    </Autocomplete>
+                  </div>
+                </div>
+                 {/* === Profile Prompt Section === */}
+                 <div className='w-full mb-4'>
+                  <h3 className=' font-bold mb-4'>Profile Prompt</h3>
+                  <div className='w-full grid grid-cols-2 gap-4'>
+                  <Select
+                    isRequired
+                    className="w-full"
+                    items={bioPrompts}
+                    label="Prompt"
+                    color='default'
+                    size='lg'
+                    selectedKey={prompt}
+                    onSelectionChange={(key) => {
+                      if (typeof key === 'string') setPrompt(key);
+                      else if (key && typeof key === 'object') setPrompt(key.key || key.currentKey);
+                    }}
+                  >
+                    {bioPrompts.map((promptObj) => (
+                      <SelectItem key={promptObj.key} value={promptObj.key}>
+                        {promptObj.label}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <Input
+                    isRequired
+                    errorMessage="Please enter a valid answer"
+                    label="Answer"
+                    color='default'
+                    size='lg'
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    className="w-full"
+                  />
+                  </div>
+                 </div>
+                 {/* === Skills Section === */}
+                 <div className='w-full mb-4'>
+                    <h3 className=' font-bold mb-4'>Skills & Work Experience</h3>
+                    <div className='w-full grid grid-cols-2 gap-4'>
+                      <Select
+                        className="w-full"
+                        label="Skills"
+                        selectionMode="multiple"
+                        size='lg'
+                        selectedKeys={new Set(skills)}
+                        onSelectionChange={(selected) => setSkills(Array.from(selected))}
+                      >
+                        {skillOptions.map((skill) => (
+                          <SelectItem key={skill.key} startContent={skill.icon}>
+                            {skill.label}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                      <Select
+                        className="w-full"
+                        label="Availability"
+                        color='default'
+                        size='lg'
+                        selectedKeys={new Set(availability.map(k => typeof k === 'string' ? k : k.key || k.currentKey))}
+                        onSelectionChange={(keys) => {
+                          if (Array.isArray(keys) || keys instanceof Set) {
+                            setAvailability(Array.from(keys).map(k => typeof k === 'string' ? k : k.key || k.currentKey));
+                          } else if (typeof keys === 'object' && keys !== null) {
+                            setAvailability([keys.key || keys.currentKey]);
+                          } else {
+                            setAvailability([keys]);
+                          }
+                        }}
+                        isRequired
+                      >
+                        {AVAILABILITY_OPTIONS.map(option => (
+                          <SelectItem key={option.key}>{option.label}</SelectItem>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
               </Form>
             )}
             {activeTab === "projects" && (
@@ -276,57 +300,81 @@ const EditProfile = ({ user }) => {
               />
             )}
             {activeTab === "contact" && 
-            <Form className="w-full max-w-xs flex flex-col items-center gap-4">
-              <Input
-                label="City"
-                labelPlacement="outside"
-                placeholder="Enter your city"
-                value={location.city}
-                onChange={(e) => setLocation({ ...location, city: e.target.value })}
-              />
-              <Input
-                label="Country"
-                labelPlacement="outside"
-                placeholder="Enter your country"
-                value={location.country}
-                onChange={(e) => setLocation({ ...location, country: e.target.value })}
-              />
-              <Input
-                label="Email"
-                labelPlacement="outside"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Input
-                label="GitHub"
-                labelPlacement="outside"
-                placeholder="Enter your GitHub"
-                value={github}
-                onChange={(e) => setGithub(e.target.value)}
-              />
-              <Input
-                label="LinkedIn"
-                labelPlacement="outside"
-                placeholder="Enter your LinkedIn"
-                value={linkedin}
-                onChange={(e) => setLinkedin(e.target.value)}
-              />
-              <Input
-                label="Portfolio"
-                labelPlacement="outside"
-                placeholder="Enter your Portfolio link"
-                value={portfolio}
-                onChange={(e) => setPortfolio(e.target.value)}
-              />
-              <Input
-                label="Twitter"
-                labelPlacement="outside"
-                placeholder="Enter your Twitter"
-                value={twitter}
-                onChange={(e) => setTwitter(e.target.value)}
-              />
-            </Form>
+              <Form className="w-full flex flex-col items-center gap-4">
+                {/* Contact Information Section */}
+                <div className="w-full mb-4">
+                  <h3 className="font-bold mb-4">Contact Information</h3>
+                  <div className='w-full grid grid-cols-2 gap-4'>
+                    <Input
+                      label="City"
+                      color='default'
+                      size='lg'
+                      labelPlacement="inside"
+                      value={location.city}
+                      onChange={(e) => setLocation({ ...location, city: e.target.value })}
+                    />
+                    <Input
+                      label="Country"
+                      color='default'
+                      size='lg'
+                      labelPlacement="inside"
+                      value={location.country}
+                      onChange={(e) => setLocation({ ...location, country: e.target.value })}
+                    />
+                    <Input
+                      label="Email"
+                      color='default'
+                      size='lg'
+                      labelPlacement="inside"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      startContent={<FaEnvelope className="text-xl text-red-500" />}
+                    />
+                  </div>
+                </div>
+                {/* Socials Section */}
+                <div className="w-full mb-4">
+                  <h3 className="font-bold mb-4">Socials</h3>
+                  <div className='w-full grid grid-cols-2 gap-4'>
+                    <Input
+                      label="GitHub"
+                      color='default'
+                      size='lg'
+                      labelPlacement="inside"
+                      value={github}
+                      onChange={(e) => setGithub(e.target.value)}
+                      startContent={<FaGithub className="text-xl text-white" />}
+                    />
+                    <Input
+                      label="LinkedIn"
+                      color='default'
+                      size='lg'
+                      labelPlacement="inside"
+                      value={linkedin}
+                      onChange={(e) => setLinkedin(e.target.value)}
+                      startContent={<FaLinkedin className="text-xl text-blue-600" />}
+                    />
+                    <Input
+                      label="Portfolio"
+                      color='default'
+                      size='lg'
+                      labelPlacement="inside"
+                      value={portfolio}
+                      onChange={(e) => setPortfolio(e.target.value)}
+                      startContent={<FaGlobe className="text-xl text-green-600" />}
+                    />
+                    <Input
+                      label="Twitter"
+                      color='default'
+                      size='lg'
+                      labelPlacement="inside"
+                      value={twitter}
+                      onChange={(e) => setTwitter(e.target.value)}
+                      startContent={<FaTwitter className="text-xl text-blue-400" />}
+                    />
+                  </div>
+                </div>
+              </Form>
             }
 
             {/* === SAVE BUTTON & ERROR MESSAGE === */}

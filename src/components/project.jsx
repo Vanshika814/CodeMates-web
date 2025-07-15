@@ -92,24 +92,24 @@ const Project = ({ userProjects = [], onSave }) => {
 
   return (
     <div>
-      <div className="gap-7 grid grid-cols-2 sm:grid-cols-2 mt-4 mb-4">
+      <div className="gap-7 grid grid-cols-2 sm:grid-cols-2 mt-4 mb-4 items-start">
         {projects.map((item, index) => (
-          <Card key={index} isPressable shadow="sm">
-            <CardBody className="overflow-visible p-0">
+          <Card key={index} isPressable shadow="sm" className="h-full flex flex-col bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
+            <CardBody className="overflow-visible p-0 flex-shrink-0">
               <Image
                 isZoomed
                 alt={item.title}
-                className="w-full object-cover h-[240px] p-2"
+                className="w-full object-cover h-[240px]"
                 radius="lg"
                 shadow="sm"
                 src={item.imageUrl}
                 width="100%"
               />
             </CardBody>
-            <CardFooter className="flex flex-col items-start gap-2">
-              <h2 className="text-lg font-bold mb-1">{item.title}</h2>
-              <p className="text-sm mb-2 text-white">{item.description}</p>
-              <div className="flex flex-wrap gap-2 mt-2">
+            <CardFooter className="flex flex-col items-start gap-2 flex-grow">
+              <h2 className="text-lg font-bold mb-1 text-left">{item.title}</h2>
+              <p className="text-sm mb-2 text-white text-left flex-grow">{item.description}</p>
+              <div className="flex flex-wrap gap-2 mt-auto">
                 {(item.tech || item.techUsed || []).map((tech, idx) => (
                   <Chip key={idx} color="secondary" variant="flat" radius="sm" className="text-xs px-2 py-1">
                     {tech}
@@ -134,7 +134,15 @@ const Project = ({ userProjects = [], onSave }) => {
 
       <Modal
         backdrop="opaque"
-        classNames={{ backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20" }}
+        // classNames={{ backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20" }}
+        classNames={{
+          body: "py-6",
+          backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
+          base: "border-[#292f46] bg-[#19172c] dark:bg-[#19172c] text-[#a8b0d3]",
+          header: "border-b-[1px] border-[#292f46]",
+          footer: "border-t-[1px] border-[#292f46]",
+          closeButton: "hover:bg-white/5 active:bg-white/10",
+        }}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
       >
@@ -145,15 +153,15 @@ const Project = ({ userProjects = [], onSave }) => {
               <Input
                 label="Title"
                 name="title"
-                placeholder="Enter Project Name"
+                variant="bordered"
                 value={projectData.title}
                 onChange={handleChange}
               />
               <Select
                 className="w-full"
+                variant="bordered"
                 label="Tech Stack"
                 labelPlacement="inside"
-                placeholder="Select tech stack"
                 selectionMode="multiple"
                 selectedKeys={selectedTechStack}
                 onSelectionChange={setSelectedTechStack}
@@ -167,7 +175,7 @@ const Project = ({ userProjects = [], onSave }) => {
               <Input
                 label="Description"
                 name="description"
-                placeholder="Enter Project Description"
+                variant="bordered"
                 value={projectData.description}
                 onChange={handleChange}
               />
@@ -203,8 +211,8 @@ const Project = ({ userProjects = [], onSave }) => {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button onPress={onOpenChange}>Close</Button>
-            <Button type="button" color="primary" onPress={handleAddProject}>Add</Button>
+            <Button onPress={onOpenChange} variant="light">Close</Button>
+            <Button type="button" className="bg-[#6f4ef2] shadow-lg shadow-indigo-500/20" color="primary" onPress={handleAddProject}>Add</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

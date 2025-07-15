@@ -1,12 +1,50 @@
-# React + Vite
+# DevTinder Web Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based frontend for DevTinder, a developer networking platform built with Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Profile Photo Upload
+- **Interactive Upload**: Click on the profile photo in the Edit Profile section to upload a new image
+- **Preview**: See a preview of your selected image before uploading
+- **Validation**: Supports image files up to 5MB
+- **Cloud Storage**: Images are automatically uploaded to Cloudinary and optimized
+- **Real-time Update**: Profile photo updates immediately after successful upload
 
-## Expanding the ESLint configuration
+### How to Use Photo Upload
+1. Navigate to the Edit Profile section
+2. Hover over your profile photo in the preview card
+3. Click "Change Photo" when the overlay appears
+4. Select an image file from your device
+5. Click "Upload Photo" to save the image
+6. The photo will be automatically updated in your profile
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+
+- **React 18** with Vite for fast development
+- **HeroUI** for modern UI components
+- **Redux Toolkit** for state management
+- **Axios** for API communication
+- **Clerk** for authentication
+- **Tailwind CSS** for styling
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## API Integration
+
+The frontend communicates with the DevTinder backend API for:
+- User authentication and profile management
+- Image uploads via Cloudinary
+- Real-time chat functionality
+- Connection requests and networking features
