@@ -18,4 +18,5 @@ export const skillOptions = [
   { label: "Jira", key: "jira", icon: <SiJirasoftware /> },
   { label: "Slack", key: "slack", icon: <SiSlack /> },
   { label: "Trello", key: "trello", icon: <SiTrello /> },
+  
 ]; 
