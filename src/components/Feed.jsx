@@ -17,7 +17,7 @@ const Feed = () => {
       dispatch(setLoading(true));
       const token = await getToken(); // fetch token from Clerk
       console.log(`📡 Fetching feed page ${page}...`);
-      const res = await axios.get(`${BASE_URL}/feed`, {
+      const res = await axios.get(BASE_URL + "/feed", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,7 +55,7 @@ const Feed = () => {
     if (userProfile && userProfile._id && feedState.users.length === 0) {
       getFeed();
     }
-  }, [userProfile, getFeed]);
+  }, [userProfile]);
 
   // Auto-load more users when running low
   useEffect(() => {
