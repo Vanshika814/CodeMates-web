@@ -15,9 +15,12 @@ const Feed = () => {
   const getFeed = async (page = 1) => {
     try {
       dispatch(setLoading(true));
-      const token = await getToken(); // fetch token from Clerk
+      const token = await getToken({
+        template: "integration_fallback",
+        frontendApi: import.meta.env.VITE_CLERK_FRONTEND_API,
+      }); // fetch token from Clerk
       console.log(`📡 Fetching feed page ${page}...`);
-      const res = await axios.get(BASE_URL + "/feed", {
+      const res = await axios.get(`${BASE_URL}/feed`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -25,7 +28,6 @@ const Feed = () => {
           page: page,
           limit: 10
         },
-        withCredentials: true,
       });
       console.log("📋 Feed response:", res.data);
       console.log("👥 Number of users in feed:", res.data?.length || 0);

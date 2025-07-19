@@ -10,6 +10,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ClerkProvider 
       publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}
+      frontendApi={import.meta.env.VITE_CLERK_FRONTEND_API}
       appearance={{
         baseTheme: undefined,
         variables: {
