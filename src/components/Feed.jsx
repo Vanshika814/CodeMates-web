@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,33 +45,14 @@ const Feed = () => {
     }
   };
 
-  const loadMoreUsers = async () => {
-    if (feedState.hasMore && !feedState.isLoading) {
-      await getFeed(feedState.currentPage + 1);
-    }
-  };
-
+ 
   useEffect(() => {
     if (userProfile && userProfile._id && feedState.users.length === 0) {
       getFeed();
     }
-  }, [userProfile, getFeed]);
+  }, [userProfile]);
 
-  // Auto-load more users when running low
-  const prevPage = useRef(null);
-
-useEffect(() => {
-  if (
-    feedState.users.length <= 2 &&
-    feedState.hasMore &&
-    !feedState.isLoading &&
-    prevPage.current !== feedState.currentPage
-  ) {
-    prevPage.current = feedState.currentPage;
-    loadMoreUsers();
-  }
-}, [feedState.users.length, feedState.hasMore, feedState.isLoading]);
-
+  
   if (!userProfile || !userProfile._id)
     return (
       <div className="flex justify-center items-center min-h-screen">
