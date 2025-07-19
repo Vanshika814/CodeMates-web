@@ -45,14 +45,25 @@ const Feed = () => {
     }
   };
 
- 
+  const loadMoreUsers = async () => {
+    if (feedState.hasMore && !feedState.isLoading) {
+      await getFeed(feedState.currentPage + 1);
+    }
+  };
+
   useEffect(() => {
     if (userProfile && userProfile._id && feedState.users.length === 0) {
       getFeed();
     }
-  }, [userProfile]);
+  }, [userProfile, getFeed]);
 
-  
+  // Auto-load more users when running low
+  useEffect(() => {
+    if (feedState.users.length <= 2 && feedState.hasMore && !feedState.isLoading) {
+      loadMoreUsers();
+    }
+  }, [feedState.users.length, feedState.hasMore, feedState.isLoading]);
+
   if (!userProfile || !userProfile._id)
     return (
       <div className="flex justify-center items-center min-h-screen">
