@@ -5,6 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addFeed, appendFeed, setLoading } from "../utils/feedSlice";
 import FeedUserCard from "./FeeduserCard";
 import { useAuth } from "@clerk/clerk-react";
+import {
+  testBackendConnection,
+  testAuthenticatedEndpoint,
+} from "../utils/api-test";
 
 const Feed = () => {
   const { getToken } = useAuth(); // get Clerk JWT
@@ -15,21 +19,38 @@ const Feed = () => {
   const getFeed = async (page = 1) => {
     try {
       dispatch(setLoading(true));
+
+      // Debug: Test backend connection first
+      console.log(`🔍 BASE_URL is: ${BASE_URL}`);
+      const healthTest = await testBackendConnection();
+      if (!healthTest.success) {
+        console.error("❌ Backend health check failed:", healthTest.error);
+        return;
+      }
+
       const token = await getToken(); // fetch token from Clerk
       console.log(`📡 Fetching feed page ${page}...`);
+      console.log(`🔑 Token available: ${!!token}`);
+
+      // Debug: Test authenticated endpoint
+      const authTest = await testAuthenticatedEndpoint(getToken);
+      if (!authTest.success) {
+        console.error("❌ Auth test failed:", authTest.error);
+      }
+
       const res = await axios.get(BASE_URL + "/feed", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         params: {
           page: page,
-          limit: 10
+          limit: 10,
         },
         withCredentials: true,
       });
       console.log("📋 Feed response:", res.data);
       console.log("👥 Number of users in feed:", res.data?.length || 0);
-      
+
       if (page === 1) {
         dispatch(addFeed(res?.data || []));
       } else {
@@ -40,6 +61,7 @@ const Feed = () => {
         "❌ Error fetching feed:",
         err?.response?.data || err.message
       );
+      console.error("❌ Full error object:", err);
     } finally {
       dispatch(setLoading(false));
     }
@@ -59,7 +81,11 @@ const Feed = () => {
 
   // Auto-load more users when running low
   useEffect(() => {
-    if (feedState.users.length <= 2 && feedState.hasMore && !feedState.isLoading) {
+    if (
+      feedState.users.length <= 2 &&
+      feedState.hasMore &&
+      !feedState.isLoading
+    ) {
       loadMoreUsers();
     }
   }, [feedState.users.length, feedState.hasMore, feedState.isLoading]);
@@ -111,9 +137,7 @@ const Feed = () => {
         <FeedUserCard user={feedState.users[0]} variant="feed" />
       )}
       {feedState.isLoading && (
-        <div className="text-center mt-4 text-white">
-          Loading more users...
-        </div>
+        <div className="text-center mt-4 text-white">Loading more users...</div>
       )}
     </div>
   );
