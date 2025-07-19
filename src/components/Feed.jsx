@@ -15,10 +15,7 @@ const Feed = () => {
   const getFeed = async (page = 1) => {
     try {
       dispatch(setLoading(true));
-      const token = await getToken({
-        template: "integration_fallback",
-        frontendApi: import.meta.env.VITE_CLERK_FRONTEND_API,
-      }); // fetch token from Clerk
+      const token = await getToken(); // fetch token from Clerk
       console.log(`📡 Fetching feed page ${page}...`);
       const res = await axios.get(`${BASE_URL}/feed`, {
         headers: {
@@ -28,6 +25,7 @@ const Feed = () => {
           page: page,
           limit: 10
         },
+        withCredentials: true,
       });
       console.log("📋 Feed response:", res.data);
       console.log("👥 Number of users in feed:", res.data?.length || 0);
@@ -57,7 +55,7 @@ const Feed = () => {
     if (userProfile && userProfile._id && feedState.users.length === 0) {
       getFeed();
     }
-  }, [userProfile]);
+  }, [userProfile, getFeed]);
 
   // Auto-load more users when running low
   useEffect(() => {
