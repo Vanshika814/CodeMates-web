@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -58,11 +58,19 @@ const Feed = () => {
   }, [userProfile, getFeed]);
 
   // Auto-load more users when running low
-  useEffect(() => {
-    if (feedState.users.length <= 2 && feedState.hasMore && !feedState.isLoading) {
-      loadMoreUsers();
-    }
-  }, [feedState.users.length, feedState.hasMore, feedState.isLoading]);
+  const prevPage = useRef(null);
+
+useEffect(() => {
+  if (
+    feedState.users.length <= 2 &&
+    feedState.hasMore &&
+    !feedState.isLoading &&
+    prevPage.current !== feedState.currentPage
+  ) {
+    prevPage.current = feedState.currentPage;
+    loadMoreUsers();
+  }
+}, [feedState.users.length, feedState.hasMore, feedState.isLoading]);
 
   if (!userProfile || !userProfile._id)
     return (
