@@ -310,25 +310,25 @@ const EditProfile = ({ user }) => {
                   <h3 className="font-bold mb-4">Contact Information</h3>
                   <div className='w-full grid sm:grid-cols-1 lg:grid-cols-2 gap-4'>
                     <Input
-                                        label="City"
-                  color='default'
-                  size='sm'
+                      label="City"
+                      color='default'
+                      size='sm'
                       labelPlacement="inside"
                       value={location.city}
                       onChange={(e) => setLocation({ ...location, city: e.target.value })}
                     />
                     <Input
-                                        label="Country"
-                  color='default'
-                  size='sm'
+                      label="Country"
+                      color='default'
+                      size='sm'
                       labelPlacement="inside"
                       value={location.country}
                       onChange={(e) => setLocation({ ...location, country: e.target.value })}
                     />
                     <Input
-                                        label="Email"
-                  color='default'
-                  size='sm'
+                      label="Email"
+                      color='default'
+                      size='sm'
                       labelPlacement="inside"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}

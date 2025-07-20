@@ -9,6 +9,7 @@ import {
   ModalContent,    // Import ModalContent
   ModalBody,       // Import ModalBody
   useDisclosure,   // Import useDisclosure
+  CircularProgress,
 } from "@heroui/react";
 import { useAuth } from '@clerk/clerk-react';
 import ProjectCard from './ProjectCard';
@@ -18,6 +19,7 @@ const Requests = () => {
   const { getToken } = useAuth();
   const requests = useSelector((store) => store.request);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
   // Modal State
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -51,6 +53,7 @@ const Requests = () => {
 
   const fetchRequests = async () => {
     try {
+      setLoading(true);
       const token = await getToken();
       const res = await axios.get(`${BASE_URL}/user/request/received`, {
         headers: {
@@ -60,6 +63,8 @@ const Requests = () => {
       dispatch(addrequest(res.data.data));
     } catch (err) {
       console.error("Error fetching requests:", err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,9 +79,32 @@ const Requests = () => {
     onOpen(); // Open the modal
   };
 
-  if (!requests) return null;
-  if (requests.length === 0)
-    return <h1 className='text-center mt-10 text-xl text-white'>No requests found!</h1>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <div className="flex flex-col items-center justify-center">
+          <CircularProgress aria-label="Loading requests..." size="lg" color="secondary"/>
+          <p className="text-purple-700 font-medium mt-4">Loading requests...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!requests || requests.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-lg text-gray-600">No requests found!</p>
+          <button
+            onClick={() => fetchRequests()}
+            className="mt-4 px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
+          >
+            Refresh
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">

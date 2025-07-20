@@ -1,19 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { BASE_URL } from '../utils/constants';
 import { addConnection } from '../utils/connectionSlice';
 import { useAuth } from '@clerk/clerk-react';
-import { Button, Chip } from "@heroui/react";
 import { Link } from "react-router"; // ✅ corrected import
+import {CircularProgress} from "@heroui/react";
 
 const Connections = () => {
   const { getToken } = useAuth();
   const connections = useSelector((store) => store.connection);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
   const fetchConnections = async () => {
     try {
+      setLoading(true);
       const token = await getToken();
 
       const res = await axios.get(BASE_URL + "/user/connections", {
@@ -25,6 +27,8 @@ const Connections = () => {
       dispatch(addConnection(res.data.data));
     } catch (err) {
       console.error("Error fetching connections:", err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,9 +36,32 @@ const Connections = () => {
     fetchConnections();
   }, []);
 
-  if (!connections) return null;
-  if (connections.length === 0)
-    return <h1 className='text-center mt-10 text-xl text-white'>No connections found!</h1>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <div className="flex flex-col items-center justify-center">
+          <CircularProgress aria-label="Loading connections..." size="lg" color="secondary"/>
+          <p className="text-purple-700 font-medium mt-4">Loading connections...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!connections || connections.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-lg text-gray-600">No connections found!</p>
+          <button
+            onClick={() => fetchConnections()}
+            className="mt-4 px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
+          >
+            Refresh
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">

@@ -9,6 +9,8 @@ import {
   testBackendConnection,
   testAuthenticatedEndpoint,
 } from "../utils/api-test";
+import {CircularProgress} from "@heroui/react";
+
 
 const Feed = () => {
   const { getToken } = useAuth(); // get Clerk JWT
@@ -90,24 +92,22 @@ const Feed = () => {
     }
   }, [feedState.users.length, feedState.hasMore, feedState.isLoading]);
 
-  if (!userProfile || !userProfile._id)
+  // Simplified loading state - covers both profile and initial feed loading
+  if (!userProfile || !userProfile._id || (feedState.isLoading && feedState.users.length === 0)) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        Loading...
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <div className="flex flex-col items-center justify-center">
+          <CircularProgress aria-label="Loading feed..." size="lg" color="secondary"/>
+          <p className="text-purple-700 font-medium mt-4">Loading feed...</p>
+        </div>
       </div>
     );
-
-  if (!feedState.users)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        Loading...
-      </div>
-    );
+  }
 
   if (feedState.users.length === 0 && !feedState.isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center">
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <div className="flex flex-col items-center justify-center">
           <p className="text-lg">No users available in feed</p>
           <p className="text-sm text-gray-500">
             Either all users have been swiped or no other users exist
@@ -123,21 +123,18 @@ const Feed = () => {
     );
   }
 
-  if (feedState.isLoading && feedState.users.length === 0) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        Loading users...
-      </div>
-    );
-  }
-
   return (
     <div>
       {feedState.users.length > 0 && (
         <FeedUserCard user={feedState.users[0]} variant="feed" />
       )}
-      {feedState.isLoading && (
-        <div className="text-center mt-4 text-white">Loading more users...</div>
+      {feedState.isLoading && feedState.users.length > 0 && (
+        <div className="flex justify-center items-center mt-4">
+          <div className="flex flex-col items-center justify-center">
+            <CircularProgress aria-label="Loading more..." size="md" color="secondary"/>
+            <p className="text-purple-700 font-medium mt-2 text-sm">Loading more users...</p>
+          </div>
+        </div>
       )}
     </div>
   );

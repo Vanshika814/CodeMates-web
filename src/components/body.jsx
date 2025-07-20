@@ -1,9 +1,10 @@
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import React from 'react';
 import MainNavbar from './NavBar';
 import Footer from './footer';
 import AutoSync from './AutoSync';
 import { useUser, useAuth } from '@clerk/clerk-react';
+import {CircularProgress} from "@heroui/react";
 
 // Clerk Session Monitor
 const ClerkSessionMonitor = () => {
@@ -35,10 +36,14 @@ const ClerkSessionMonitor = () => {
 
 const Body = () => {
   const { isLoaded } = useUser();
+  const location = useLocation();
+  
+  // Check if current route is a chat page
+  const isChatPage = location.pathname.startsWith('/chat');
 
   // Show loading while Clerk loads
   if (!isLoaded) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return <CircularProgress aria-label="Loading..." size="lg" color="secondary"/>;
   }
 
   return (
@@ -48,7 +53,7 @@ const Body = () => {
       <main className="flex-grow">
         <Outlet />
       </main>
-      <Footer />
+      {!isChatPage && <Footer />}
     </div>
   );
 };

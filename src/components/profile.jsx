@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
+import {CircularProgress} from "@heroui/react";
 
 const Profile = () => {
   const { getToken, isLoaded } = useAuth();
@@ -54,20 +55,26 @@ const Profile = () => {
 
   if (!isLoaded || loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        Loading...
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <div className="flex flex-col items-center justify-center">
+          <CircularProgress aria-label="Loading profile..." size="lg" color="secondary"/>
+          <p className="text-purple-700 font-medium mt-4">Loading profile...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-500 text-center">
-          <p>Error loading profile: {error}</p>
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <div className="flex flex-col items-center justify-center">
+          <div className="text-red-500 mb-4 text-center">
+            <p className="text-lg font-medium">Error loading profile</p>
+            <p className="text-sm">{error}</p>
+          </div>
           <button
             onClick={() => window.location.reload()}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+            className="px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
           >
             Retry
           </button>
@@ -78,9 +85,15 @@ const Profile = () => {
 
   if (!userFromRedux) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center">
-          <p>No profile data found</p>
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-lg text-gray-600">No profile data found</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
+          >
+            Refresh
+          </button>
         </div>
       </div>
     );

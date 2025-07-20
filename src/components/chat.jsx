@@ -118,47 +118,47 @@ const Chat = () => {
     // Add loading guard before rendering
     if (!userId || !user?.FirstName) {
         return (
-          <div className="max-w-4xl mx-auto my-6 h-[600px] bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg flex items-center justify-center">
+          <div className="w-full max-w-4xl mx-auto my-2 md:my-6 h-[70vh] md:h-[600px] bg-gradient-to-br from-purple-50 to-purple-100 lg:rounded-2xl shadow-lg flex items-center justify-center px-4">
             <div className="text-center">
-              <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-purple-700 font-medium">Loading chat...</p>
+              <div className="w-12 h-12 md:w-16 md:h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-purple-700 font-medium text-sm md:text-base">Loading chat...</p>
             </div>
           </div>
         );
     }
   return (
-    <div className="max-w-4xl mx-auto my-6 h-[500px] bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg flex flex-col overflow-hidden">
+    <div className="w-full max-w-4xl mx-auto my-2 md:my-6 h-[87vh] md:h-[500px] bg-gradient-to-br from-purple-50 to-purple-100 rounded-none md:rounded-2xl shadow-lg flex flex-col overflow-hidden">
       {/* Chat Header */}
-      <div className="bg-white shadow-sm border-b border-purple-200 px-6 py-4 rounded-t-2xl">
-        <div className="flex items-center gap-3">
+      <div className="bg-white shadow-sm border-b border-purple-200 px-3 md:px-6 py-3 md:py-4 rounded-t-lg md:rounded-t-2xl">
+        <div className="flex items-center gap-2 md:gap-3">
           <Avatar 
             src={messages.length > 0 ? messages.find(msg => msg.sender === "other")?.avatar : ""} 
-            size="md"
-            className="ring-2 ring-purple-200"
+            size="sm"
+            className="md:size-md ring-2 ring-purple-200"
           />
           <div>
-            <h1 className="text-xl font-bold text-purple-800">
+            <h1 className="text-lg md:text-xl font-bold text-purple-800">
               {messages.length > 0 
                 ? `${messages.find(msg => msg.sender === "other")?.FirstName || ""} ${messages.find(msg => msg.sender === "other")?.LastName || ""}`
                 : "Chat"
               }
             </h1>
-            <p className="text-sm text-gray-600">Online</p>
+            <p className="text-xs md:text-sm text-gray-600">Online</p>
           </div>
         </div>
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gradient-to-b from-white/50 to-purple-50/30 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto px-3 md:px-6 py-3 md:py-4 space-y-3 md:space-y-4 bg-gradient-to-b from-white/50 to-purple-50/30 scrollbar-hide">
         {messages.map((msg, index) => {
           const isMe = msg.sender === "me";
           return (
-            <div key={index} className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-4`}>
-              <div className={`flex items-end gap-3 max-w-md ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
+            <div key={index} className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-3 md:mb-4`}>
+              <div className={`flex items-end gap-2 md:gap-3 max-w-[85%] md:max-w-md ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
                 <Avatar 
                   src={msg.photoUrl}
                   size="sm"
-                  className="flex-shrink-0 ring-2 ring-purple-100"
+                  className="flex-shrink-0 ring-2 ring-purple-100 w-6 h-6 md:w-8 md:h-8"
                 />
                 <div className="flex flex-col">
                   <div className={`flex items-center gap-2 mb-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
@@ -169,12 +169,12 @@ const Chat = () => {
                       })}
                     </time>
                   </div>
-                  <div className={`rounded-2xl px-4 py-3 shadow-sm ${
+                  <div className={`rounded-xl md:rounded-2xl px-3 md:px-4 py-2 md:py-3 shadow-sm ${
                     isMe 
                       ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-br-md' 
                       : 'bg-white border border-gray-200 text-gray-800 rounded-bl-md'
                   }`}>
-                    <p className="text-sm leading-relaxed">{msg.text}</p>
+                    <p className="text-sm leading-relaxed break-words">{msg.text}</p>
                   </div>
                 </div>
               </div>
@@ -185,8 +185,8 @@ const Chat = () => {
       </div>
 
       {/* Message Input */}
-      <div className="bg-white border-t border-purple-200 px-6 py-4 shadow-lg rounded-b-2xl">
-        <div className="flex items-center gap-3">
+      <div className="bg-white border-t border-purple-200 px-3 md:px-6 py-3 md:py-4 shadow-lg rounded-b-lg md:rounded-b-2xl">
+        <div className="flex items-center gap-2 md:gap-3">
           <div className="flex-1 relative">
             <Input 
               value={newMessage}
@@ -195,9 +195,10 @@ const Chat = () => {
               placeholder="Type your message..." 
               type="text"
               variant="bordered"
-              className="w-full"
+              size="sm"
+              className="w-full md:size-md"
               classNames={{
-                input: "bg-gray-50 text-gray-800",
+                input: "bg-gray-50 text-gray-800 text-sm md:text-base",
                 inputWrapper: "border-gray-300 hover:border-purple-400 focus-within:border-purple-600 bg-gray-50"
               }}
             />
@@ -206,7 +207,7 @@ const Chat = () => {
             isIconOnly
             onPress={handleSendMessage}
             className="bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 shadow-md"
-            size="lg"
+            size="md"
           >
             <SendIcon />
           </Button>
