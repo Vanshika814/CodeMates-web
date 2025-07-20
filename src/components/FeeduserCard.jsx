@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { Card, CardHeader, CardBody, CardFooter, Image, Button, Chip } from "@heroui/react";
+import ProjectCard from "./ProjectCard";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
@@ -89,6 +90,20 @@ const UserCard = ({ user}) => {
   const dispatch = useDispatch();
   const [showDetails, setShowDetails] = useState(false);
 
+  // Show details panel by default on desktop
+  useEffect(() => {
+    const checkScreenSize = () => {
+      if (window.innerWidth >= 1024) { // lg breakpoint
+        setShowDetails(true);
+      }
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   const handleSendRequest = async (status, userId) => {
     try {
       const token = await getToken();
@@ -114,18 +129,18 @@ const UserCard = ({ user}) => {
 
   return (
     <div className="flex justify-center items-start min-h-screen p-4 mt-6">
-      <div className="flex gap-6 max-w-6xl w-full justify-center items-start">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-1 max-w-6xl w-full justify-center items-start">
         {/* Main Card */}
-        <Card className="w-80 h-[510px] flex flex-col flex-shrink-0 shadow-2xl border-0 overflow-hidden">
+        <Card className="w-full max-w-sm lg:w-72 h-[530px] lg:h-[490px] flex flex-col flex-shrink-0 shadow-2xl border-0 overflow-hidden">
           <CardHeader className="pb-0 pt-2 px-4 flex-col items-start flex-shrink-0">
           </CardHeader>
           <CardBody className="overflow-hidden py-0 px-4 relative flex-1 flex flex-col">
-                        <div className="flex-1 flex flex-col">
-                <div className="relative w-full h-[290px] rounded-2xl overflow-hidden shadow-lg mt-2">
+                <div className="flex-1 flex flex-col">
+                <div className="relative w-full h-80 lg:h-[290px] rounded-2xl overflow-hidden shadow-lg mt-2">
                 <Image
                   alt="Card photo"
                   className="w-full h-full object-cover object-center"
-                  src={user.photoUrl}
+                  src={user.photoUrl || "https://via.placeholder.com/400x400?text=No+Photo"}
                   style={{ objectFit: 'cover' }}
                 />
                 
@@ -159,11 +174,11 @@ const UserCard = ({ user}) => {
               
               {/* Skills */}
               {skills.length > 0 && (
-                <div className="mt-3 px-1">
-                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/20 shadow-lg">
+                <div className="mt-2 px-1">
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-2 border border-white/20 shadow-lg">
                     <div className="flex flex-wrap items-center text-sm">
-                      <span className="font-semibold text-purple-300 mr-2">🛠️ Skills -</span>
-                      <span className="text-gray-100 font-medium text-sm">
+                      <span className="font-semibold text-purple-300 mr-2 text-xs">🛠️ Skills -</span>
+                      <span className="text-gray-100 font-medium text-tiny">
                         {skills.join(', ')}
                       </span>
                     </div>
@@ -174,10 +189,10 @@ const UserCard = ({ user}) => {
               {/* Availability */}
               {availability && availability.openTo && availability.openTo.length > 0 && (
                 <div className="mt-2 px-1">
-                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/20 shadow-lg">
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-2 border border-white/20 shadow-lg">
                     <div className="flex flex-wrap items-center text-sm">
-                      <span className="font-semibold text-purple-200 mr-2">🔍 Looking for -</span>
-                      <span className="text-white font-medium">
+                      <span className="font-semibold text-purple-200 mr-2 text-xs">🔍 Looking for -</span>
+                      <span className="text-white font-medium text-tiny">
                         {availability.openTo.join(', ')}
                       </span>
                     </div>
@@ -213,14 +228,70 @@ const UserCard = ({ user}) => {
           </CardBody>
         </Card>
 
-        {/* Details Panel */}
+        {/* Mobile Details Panel - Below Card */}
+        {showDetails && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="lg:hidden w-full max-w-md sm:max-w-lg mx-auto bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] rounded-xl p-3 sm:p-4 md:p-5 shadow-xl max-h-[350px] sm:max-h-[400px] md:max-h-[450px] overflow-y-auto scrollbar-hide"
+          >
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
+              <h2 className="text-white font-bold text-base sm:text-lg md:text-xl">📝 About me</h2>
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                onPress={() => setShowDetails(false)}
+                className="text-white hover:bg-white/10"
+              >
+                ✕
+              </Button>
+            </div>
+
+            <div className="space-y-3 sm:space-y-4">
+              {/* About Section */}
+              {about && (
+                <div className="backdrop-blur-sm rounded-xl p-2 sm:p-3 bg-white/5">
+                  <h3 className="text-white font-bold text-sm sm:text-base mb-2 flex items-center gap-2">
+                    <span>👤</span> About
+                  </h3>
+                  <div className="text-white/90 text-xs sm:text-sm font-medium leading-relaxed">{about}</div>
+                </div>
+              )}
+
+              {/* Projects Section */}
+              <div>
+                <h3 className="text-white font-bold text-sm sm:text-base mb-2 sm:mb-3 flex items-center gap-1 sm:gap-2">
+                  <span>💻</span> Projects
+                </h3>
+                <ProjectCard projects={projects} />
+              </div>
+
+              {/* Bio Prompts Section */}
+              {bioAnswers && bioAnswers.length > 0 && bioAnswers[0] && (
+                <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-xl p-2 sm:p-3 border border-purple-300/30">
+                  <h3 className="text-white font-bold text-xs sm:text-sm mb-2 flex items-center gap-1 sm:gap-2">
+                    <span>💭</span> {bioAnswers[0].prompt}
+                  </h3>
+                  <div className="text-white/90 text-xs sm:text-sm font-medium leading-relaxed bg-black/20 rounded-lg p-2 sm:p-3">
+                    {bioAnswers[0].answer}
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Desktop Details Panel - Side Panel */}
         {showDetails && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
-            className="w-96 bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] rounded-xl p-6 shadow-xl max-h-[510px] overflow-y-auto scrollbar-hide"
+            className="hidden lg:block w-96 bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] rounded-xl p-6 shadow-xl max-h-[490px] overflow-y-auto scrollbar-hide"
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-white font-bold text-xl">📝 About me</h2>
@@ -251,48 +322,7 @@ const UserCard = ({ user}) => {
                 <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
                   <span>💻</span> Projects
                 </h3>
-                {projects && projects.length > 0 ? (
-                  <div className="space-y-4">
-                    {projects.map((item, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ 
-                          delay: index * 0.1,
-                          duration: 0.3 
-                        }}
-                      >
-                                                 <Card className="bg-gradient-to-br from-[#2a2a2a] to-[#3d2a5c] border-none overflow-hidden">
-                           <CardBody className="p-0">
-                             <div className="relative w-full h-40 overflow-hidden">
-                               <Image
-                                 alt={item.title}
-                                 className="w-full h-full object-cover object-center"
-                                 src={item.imageUrl}
-                                 radius="none"
-                                 style={{ objectFit: 'cover' }}
-                               />
-                             </div>
-                            <div className="p-4">
-                              <h4 className="text-white font-bold text-sm mb-2">{item.title}</h4>
-                              <p className="text-white/80 text-xs mb-3 line-clamp-2">{item.description}</p>
-                              <div className="flex flex-wrap gap-1">
-                                {(item.tech || item.techUsed || []).map((tech, idx) => (
-                                  <Chip key={idx} size="sm" variant="flat" className="text-xs bg-purple-500/20 text-purple-300">
-                                    {tech}
-                                  </Chip>
-                                ))}
-                              </div>
-                            </div>
-                          </CardBody>
-                        </Card>
-                      </motion.div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-gray-400 text-center py-8 text-sm">No projects to display.</div>
-                )}
+                <ProjectCard projects={projects} />
               </div>
 
               {/* Bio Prompts Section */}

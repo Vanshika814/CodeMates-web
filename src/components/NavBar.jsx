@@ -83,8 +83,8 @@ const MainNavbar = () => {
     >
       {/* Mobile Menu Toggle - Only visible on small screens */}
       {isSignedIn && (
-        <NavbarContent className="sm:hidden" justify="start">
-          <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
+      <NavbarContent className="sm:hidden" justify="start">
+        <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
         </NavbarContent>
       )}
 
@@ -93,7 +93,7 @@ const MainNavbar = () => {
         <NavbarBrand>
           <RouterLink to={isSignedIn ? "/feed" : "/"} className="flex items-center gap-2">
             <AcmeLogo />
-            <p className="font-bold text-xl text-white">DevTinder</p>
+            <p className="font-bold text-xl text-white">CodeMates</p>
           </RouterLink>
         </NavbarBrand>
       </NavbarContent>

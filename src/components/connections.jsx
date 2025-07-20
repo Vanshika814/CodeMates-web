@@ -37,76 +37,73 @@ const Connections = () => {
     return <h1 className='text-center mt-10 text-xl text-white'>No connections found!</h1>;
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center mt-10 p-6'>
-      {connections.map((connection, index) => {
-        const { _id, FirstName, LastName, photoUrl, age, gender, location, skills = [] } = connection;
+    <div className="p-4">
+      {/* Mobile Heading */}
+      <h1 className="md:hidden text-2xl font-bold text-white mb-6 text-center">Say hello 👋</h1>
+      
+              {/* Mobile View - Chat List Style */}
+        <div className="md:hidden space-y-6">
+        {connections.map((connection) => {
+          const { _id, FirstName, LastName, photoUrl } = connection;
+          return (
+            <Link key={_id} to={`/chat/${_id}`}>
+              <div className="flex items-center p-3 m-1 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all gap-1">
+                <img
+                  src={photoUrl || "https://via.placeholder.com/50x50?text=No+Photo"}
+                  alt={`${FirstName} ${LastName}`}
+                  className="w-12 h-12 rounded-full object-cover mr-3"
+                />
+                                 <div>
+                   <h3 className="text-white font-semibold">{FirstName} {LastName}</h3>
+                   <p className="text-gray-300 text-xs">
+                     {connection.availability && connection.availability.openTo && connection.availability.openTo.length > 0
+                       ? `Available for ${connection.availability.openTo.slice(0, 2).join(" • ")}`
+                       : "Available for collaboration"
+                     }
+                   </p>
+                 </div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
 
-        return (
-          <div
-            key={index}
-            className="bg-purple-100 rounded-2xl shadow-lg p-4 text-center w-64 mx-auto border border-purple-200 hover:shadow-xl transition-shadow duration-300"
-          >
-            {/* Profile Picture */}
-            <div className="flex justify-center mb-3">
-              <img
-                src={photoUrl || "https://via.placeholder.com/80x80?text=No+Photo"}
-                alt={`${FirstName} ${LastName}`}
-                className="w-20 h-20 rounded-full object-cover ring-3 ring-purple-200 shadow-md"
-              />
-            </div>
-
-            {/* User Details */}
-            <h2 className="text-lg font-bold text-purple-800 mb-2">{FirstName} {LastName}</h2>
-            {/* Availability */}
-            {connection.availability && connection.availability.openTo && connection.availability.openTo.length > 0 ? (
-              <p className="text-xs text-gray-600 mb-3 px-2">
-                Available for {connection.availability.openTo.slice(0, 2).join(" • ")}
-              </p>
-            ) : (
-              <p className="text-xs text-gray-600 mb-3 px-2">
-                Available for collaboration
-              </p>
-            )}
-
-            {/* Skills and Info Chips */}
-            <div className="mb-4">
-              <div className="flex flex-wrap gap-1 justify-center">
-                {/* Age Chip */}
-                <span className="bg-purple-200 text-purple-800 px-2 py-1 text-xs rounded-full font-medium">
+      {/* Desktop View - Original Cards */}
+      <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4 place-items-center mt-10">
+        {connections.map((connection) => {
+          const { _id, FirstName, LastName, photoUrl, age, gender, location } = connection;
+          return (
+            <div
+              key={_id}
+              className="bg-purple-100 rounded-2xl shadow-lg p-4 text-center w-56 border border-purple-200 hover:shadow-xl transition-shadow"
+            >
+              <div className="flex justify-center mb-3">
+                <img
+                  src={photoUrl || "https://via.placeholder.com/80x80?text=No+Photo"}
+                  alt={`${FirstName} ${LastName}`}
+                  className="w-20 h-20 rounded-full object-cover ring-3 ring-purple-200"
+                />
+              </div>
+              <h2 className="text-lg font-bold text-purple-800 mb-2">{FirstName} {LastName}</h2>
+              <p className="text-xs text-gray-600 mb-3">Available for collaboration</p>
+              <div className="mb-4 flex gap-1 justify-center">
+                <span className="bg-purple-200 text-purple-800 px-2 py-1 text-xs rounded-full">
                   {age} years
                 </span>
-                {/* Gender Chip */}
-                <span className="bg-purple-300 text-purple-900 px-2 py-1 text-xs rounded-full font-medium">
+                <span className="bg-purple-300 text-purple-900 px-2 py-1 text-xs rounded-full">
                   {gender}
                 </span>
-                {/* Skills Chips */}
-                {skills.slice(0, 3).map((skill, idx) => (
-                  <span key={idx} className="bg-purple-100 text-purple-700 px-2 py-1 text-xs rounded-full font-medium">
-                    {skill}
-                  </span>
-                ))}
-                {skills.length > 3 && (
-                  <span className="bg-purple-400 text-purple-100 px-2 py-1 text-xs rounded-full font-medium">
-                    +{skills.length - 3} skills
-                  </span>
-                )}
               </div>
+              {location && <p className="text-xs text-gray-500 mb-3">📍 {location}</p>}
+              <Link to={`/chat/${_id}`}>
+                <button className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-2 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all text-sm">
+                  Say Hello 👋
+                </button>
+              </Link>
             </div>
-
-            {/* Location */}
-            {location && (
-              <p className="text-xs text-gray-500 mb-3">📍 {location}</p>
-            )}
-
-            {/* Action Button */}
-            <Link to={`/chat/${_id}`}>
-              <button className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-2 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg text-sm">
-                Say Hello 👋
-              </button>
-            </Link>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

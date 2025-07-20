@@ -92,26 +92,26 @@ const Project = ({ userProjects = [], onSave }) => {
 
   return (
     <div>
-      <div className="gap-7 grid grid-cols-2 sm:grid-cols-2 mt-4 mb-4 items-start">
+      <div className="gap-4 sm:gap-6 lg:gap-7 grid grid-cols-1  lg:grid-cols-2 mt-4 mb-4 items-start">
         {projects.map((item, index) => (
           <Card key={index} isPressable shadow="sm" className="h-full flex flex-col bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
             <CardBody className="overflow-visible p-0 flex-shrink-0">
               <Image
                 isZoomed
                 alt={item.title}
-                className="w-full object-cover h-[240px]"
+                className="lg:w-full object-cover h-[170px] sm:h-[220px] lg:h-[220px] sm:w-48"
                 radius="lg"
                 shadow="sm"
                 src={item.imageUrl}
                 width="100%"
               />
             </CardBody>
-            <CardFooter className="flex flex-col items-start gap-2 flex-grow">
-              <h2 className="text-lg font-bold mb-1 text-left">{item.title}</h2>
-              <p className="text-sm mb-2 text-white text-left flex-grow">{item.description}</p>
-              <div className="flex flex-wrap gap-2 mt-auto">
+            <CardFooter className="flex flex-col items-start gap-1 flex-grow sm:p-4">
+              <h3 className="text-sm sm:text-sm lg:text-md font-bold text-left line-clamp-2">{item.title}</h3>
+              <p className="text-xs sm:text-tiny lg:text-tiny text-white text-left flex-grow line-clamp-2 sm:line-clamp-3">{item.description}</p>
+              <div className="flex flex-wrap gap-1 sm:gap-2 mt-1">
                 {(item.tech || item.techUsed || []).map((tech, idx) => (
-                  <Chip key={idx} color="secondary" variant="flat" radius="sm" className="text-xs px-2 py-1">
+                  <Chip key={idx} color="secondary" variant="flat" radius="sm" className="text-tiny sm:text-tiny lg:text-tiny px-1 py-0.5 sm:px-2 sm:py-1">
                     {tech}
                   </Chip>
                 ))}
@@ -123,11 +123,11 @@ const Project = ({ userProjects = [], onSave }) => {
           isPressable
           shadow="sm"
           onPress={onOpen}
-          className="flex items-center justify-center border-dashed border-2 border-gray-500 hover:border-primary"
+          className="flex items-center justify-center border-dashed border-2 border-gray-500 hover:border-primary min-h-[200px] sm:min-h-[220px] lg:min-h-[240px]"
         >
-          <CardBody className="flex flex-col items-center justify-center p-8">
-            <PlusIcon size={30} />
-            <p className="text-sm mt-2">Add Project</p>
+          <CardBody className="flex flex-col items-center justify-center p-6 sm:p-8">
+            <PlusIcon size={24} className="sm:w-8 sm:h-8" />
+            <p className="text-xs sm:text-sm mt-2">Add Project</p>
           </CardBody>
         </Card>
       </div>

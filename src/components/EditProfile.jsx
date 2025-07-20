@@ -120,23 +120,25 @@ const EditProfile = ({ user }) => {
     <>
       <ToastProvider placement={placement} toastOffset={placement.includes("top") ? 60 : 0} />
 
-      <div className="flex gap-3 justify-center items-start">
-        <ProfileUserCard 
-          user={{ FirstName, LastName, age, gender, about, photoUrl, socialLinks: { github, linkedin, twitter }, location: location.city + ", " + location.country }} 
-          isEditing={true}
-          onImageUpload={(newUrl) => {
-            setPhotoUrl(newUrl);
-          }}
-        /> 
-        <Card className="w-3/5 mx-2 mt-8 p-4 min-h-[600px]">
+      <div className="flex flex-col lg:flex-row gap-3 lg:gap-6 justify-center items-start p-4">
+        <div className="w-full lg:w-auto flex justify-center">
+          <ProfileUserCard 
+            user={{ FirstName, LastName, age, gender, about, photoUrl, socialLinks: { github, linkedin, twitter }, location: location.city + ", " + location.country }} 
+            isEditing={true}
+            onImageUpload={(newUrl) => {
+              setPhotoUrl(newUrl);
+            }}
+          />
+        </div>
+        <Card className="w-full lg:w-3/5 mt-4 lg:mt-8 p-4 min-h-[600px]">
           <CardBody className='pt-0 '>
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold p-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+              <h1 className="text-xl sm:text-2xl font-bold p-2 sm:p-3">
                 {activeTab === "about" && "About"}
                 {activeTab === "projects" && "Projects"}
                 {activeTab === "contact" && "Contact"}
               </h1>
-              <div className="w-64 ml-auto">
+              <div className="w-full sm:w-64 sm:ml-auto">
                 <Tabs
                   aria-label="Edit Profile Sections"
                   selectedKey={activeTab}
@@ -144,6 +146,7 @@ const EditProfile = ({ user }) => {
                   variant="light"
                   size="md"
                   color='secondary'
+                  className="w-full"
                 >
                   <Tab key="about" title="About" />
                   <Tab key="projects" title="Projects" />
@@ -154,7 +157,7 @@ const EditProfile = ({ user }) => {
 
             {/* Tab Content */}
             {activeTab === "about" && (
-              <Form className="w-full flex flex-col items-center gap-4">
+              <Form className="w-full flex flex-col items-center gap-4 ">
                 <Textarea
                   isRequired
                   errorMessage="Please enter a valid about"
@@ -162,46 +165,46 @@ const EditProfile = ({ user }) => {
                   placeholder="Tell us about yourself..."
                   value={about}
                   onChange={(e) => setabout(e.target.value)}
-                  className="w-full"
+                  className="w-full text-tiny sm:text-tiny lg:text-sm"
                 />
                 <div className='w-full mb-4'>
                   <h3 className=' font-bold mb-4'>Personal Information</h3>
-                  <div className='w-full grid grid-cols-2 gap-4'>
+                  <div className='w-full grid sm:grid-cols-1 lg:grid-cols-2  gap-4'>
                   
                     <Input
                       isRequired
                       errorMessage="Please enter a valid First Name"
                       label="First Name"
                       color='default'
-                      size='lg'
+                      size='sm'
+                      className="w-full sm:text-sm lg:text-base"
                       value={FirstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full"
                     />
                     <Input
                       errorMessage="Please enter a valid Last Name"
                       label="Last Name"
                       color='default'
-                      size='lg'
+                      size='sm'
+                      className="w-full sm:text-sm lg:text-base"
                       value={LastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      className="w-full"
                     />
                     <Input
                       isRequired
                       errorMessage="Please enter a valid age"
                       label="Age"
                       color='default'
-                      size='lg'
+                      size='sm'
+                      className="w-full sm:text-sm lg:text-base"
                       value={age}
                       onChange={(e) => setage(e.target.value)}
-                      className="w-full"
                     />
                     <Autocomplete
-                      className="w-full"
+                      className="w-full sm:text-sm lg:text-base"
                       label="Gender"
                       color='default'
-                      size='lg'
+                      size='sm'
                       selectedKey={gender}
                       onSelectionChange={(key) => setgender(key)}
                       defaultItems={[
@@ -218,18 +221,19 @@ const EditProfile = ({ user }) => {
                  {/* === Profile Prompt Section === */}
                  <div className='w-full mb-4'>
                   <h3 className=' font-bold mb-4'>Profile Prompt</h3>
-                  <div className='w-full grid grid-cols-2 gap-4'>
+                  <div className='w-full grid sm:grid-cols-1 lg:grid-cols-2 gap-4'>
                   <Select
                     isRequired
-                    className="w-full"
+                    className="w-full sm:text-sm lg:text-base"
                     items={bioPrompts}
                     label="Prompt"
                     color='default'
-                    size='lg'
+                    size='sm'
                     selectedKey={prompt}
                     onSelectionChange={(key) => {
                       if (typeof key === 'string') setPrompt(key);
-                      else if (key && typeof key === 'object') setPrompt(key.key || key.currentKey);
+                      else if (key instanceof Set) setPrompt(Array.from(key)[0]);
+                      else if (key && typeof key === 'object') setPrompt(key.currentKey || key);
                     }}
                   >
                     {bioPrompts.map((promptObj) => (
@@ -243,22 +247,22 @@ const EditProfile = ({ user }) => {
                     errorMessage="Please enter a valid answer"
                     label="Answer"
                     color='default'
-                    size='lg'
+                    size='sm'
+                    className="w-full sm:text-sm lg:text-base"
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
-                    className="w-full"
                   />
                   </div>
                  </div>
                  {/* === Skills Section === */}
                  <div className='w-full mb-4'>
                     <h3 className=' font-bold mb-4'>Skills & Work Experience</h3>
-                    <div className='w-full grid grid-cols-2 gap-4'>
+                    <div className='w-full grid sm:grid-cols-1 lg:grid-cols-2  gap-4'>
                       <Select
-                        className="w-full"
+                        className="w-full sm:text-sm lg:text-base"
                         label="Skills"
                         selectionMode="multiple"
-                        size='lg'
+                        size='sm'
                         selectedKeys={new Set(skills)}
                         onSelectionChange={(selected) => setSkills(Array.from(selected))}
                       >
@@ -269,10 +273,10 @@ const EditProfile = ({ user }) => {
                         ))}
                       </Select>
                       <Select
-                        className="w-full"
+                        className="w-full sm:text-sm lg:text-base"
                         label="Availability"
                         color='default'
-                        size='lg'
+                        size='sm'
                         selectedKeys={new Set(availability.map(k => typeof k === 'string' ? k : k.key || k.currentKey))}
                         onSelectionChange={(keys) => {
                           if (Array.isArray(keys) || keys instanceof Set) {
@@ -304,27 +308,27 @@ const EditProfile = ({ user }) => {
                 {/* Contact Information Section */}
                 <div className="w-full mb-4">
                   <h3 className="font-bold mb-4">Contact Information</h3>
-                  <div className='w-full grid grid-cols-2 gap-4'>
+                  <div className='w-full grid sm:grid-cols-1 lg:grid-cols-2 gap-4'>
                     <Input
-                      label="City"
-                      color='default'
-                      size='lg'
+                                        label="City"
+                  color='default'
+                  size='sm'
                       labelPlacement="inside"
                       value={location.city}
                       onChange={(e) => setLocation({ ...location, city: e.target.value })}
                     />
                     <Input
-                      label="Country"
-                      color='default'
-                      size='lg'
+                                        label="Country"
+                  color='default'
+                  size='sm'
                       labelPlacement="inside"
                       value={location.country}
                       onChange={(e) => setLocation({ ...location, country: e.target.value })}
                     />
                     <Input
-                      label="Email"
-                      color='default'
-                      size='lg'
+                                        label="Email"
+                  color='default'
+                  size='sm'
                       labelPlacement="inside"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -335,11 +339,11 @@ const EditProfile = ({ user }) => {
                 {/* Socials Section */}
                 <div className="w-full mb-4">
                   <h3 className="font-bold mb-4">Socials</h3>
-                  <div className='w-full grid grid-cols-2 gap-4'>
+                  <div className='w-full grid sm:grid-cols-1 lg:grid-cols-2 gap-4'>
                     <Input
                       label="GitHub"
                       color='default'
-                      size='lg'
+                      size='sm'
                       labelPlacement="inside"
                       value={github}
                       onChange={(e) => setGithub(e.target.value)}
@@ -348,7 +352,7 @@ const EditProfile = ({ user }) => {
                     <Input
                       label="LinkedIn"
                       color='default'
-                      size='lg'
+                      size='sm'
                       labelPlacement="inside"
                       value={linkedin}
                       onChange={(e) => setLinkedin(e.target.value)}
@@ -357,7 +361,7 @@ const EditProfile = ({ user }) => {
                     <Input
                       label="Portfolio"
                       color='default'
-                      size='lg'
+                      size='sm'
                       labelPlacement="inside"
                       value={portfolio}
                       onChange={(e) => setPortfolio(e.target.value)}
@@ -366,7 +370,7 @@ const EditProfile = ({ user }) => {
                     <Input
                       label="Twitter"
                       color='default'
-                      size='lg'
+                      size='sm'
                       labelPlacement="inside"
                       value={twitter}
                       onChange={(e) => setTwitter(e.target.value)}

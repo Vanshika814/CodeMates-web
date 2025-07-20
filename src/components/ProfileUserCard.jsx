@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Card, CardHeader, CardBody, Divider, CardFooter, Button, Spinner,Input } from "@heroui/react";
-import { FaLinkedin, FaGithub, FaTwitter, FaCamera, FaUpload, FaGlobe, FaUser, FaBirthdayCake, FaVenusMars } from "react-icons/fa";
+import { FaLinkedin, FaGithub, FaTwitter, FaCamera, FaUpload, FaGlobe, FaUser, FaBirthdayCake, FaVenusMars, FaEdit } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
@@ -59,8 +59,8 @@ const ProfileUserCard = ({ user, onImageUpload, isEditing = false }) => {
   };
 
   return (
-    <div className="flex justify-center items-start p-4 h-full mt-4">
-      <Card className="w-80 h-auto flex flex-col">
+    <div className="flex justify-center items-start p-2 sm:p-4 h-full mt-2 sm:mt-4">
+      <Card className="w-72 sm:w-72 lg:w-72 h-auto flex flex-col">
         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start flex-shrink-0"></CardHeader>
         <CardBody className="overflow-visible py-2 px-4 relative flex-1 flex flex-col">
           <div className="flex-1 flex flex-col gap-2">
@@ -69,11 +69,12 @@ const ProfileUserCard = ({ user, onImageUpload, isEditing = false }) => {
                 <div className="relative w-full">
                   <img
                     alt="Profile"
-                    className="object-cover rounded-xl w-full h-80 cursor-pointer hover:opacity-80"
+                    className="object-cover rounded-xl w-full h-64 sm:h-72 lg:h-80 cursor-pointer hover:opacity-80"
                     src={previewUrl || photoUrl || "https://via.placeholder.com/400x400?text=Upload+Photo"}
                     onClick={handleUploadClick}
                   />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 bg-black/30 rounded-xl">
+                  {/* Desktop hover overlay */}
+                  <div className="hidden sm:flex absolute inset-0 items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 bg-black/30 rounded-xl">
                     <Button
                       color="primary"
                       variant="flat"
@@ -84,6 +85,16 @@ const ProfileUserCard = ({ user, onImageUpload, isEditing = false }) => {
                       Change Photo
                     </Button>
                   </div>
+                  
+                  {/* Mobile edit icon */}
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    onPress={handleUploadClick}
+                    className="sm:hidden absolute bottom-2 right-2 bg-purple-600 text-white rounded-full shadow-lg"
+                  >
+                    <FaEdit size={14} />
+                  </Button>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -118,7 +129,7 @@ const ProfileUserCard = ({ user, onImageUpload, isEditing = false }) => {
               ) : (
                 <img
                   alt="Card photo"
-                  className="object-cover rounded-xl w-full h-80 flex-shrink-0"
+                  className="object-cover rounded-xl w-full h-64 sm:h-80 lg:h-96 flex-shrink-0"
                   src={photoUrl || "https://via.placeholder.com/400x400?text=No+Photo"}
                 />
               )}

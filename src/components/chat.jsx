@@ -39,14 +39,14 @@ const Chat = () => {
             });
 
             const chatMessages = chat?.data?.messages?.map(msg => {
-                const {senderId, text, timestamp} = msg;
+                const {senderId, text, createdAt} = msg;
                 const senderComparison = senderId?._id === userId;
                 
                 return{
                     FirstName: senderId?.FirstName, 
                     LastName: senderId?.LastName, 
                     text,
-                    timestamp, 
+                    timestamp: createdAt, // Use createdAt from MongoDB
                     sender: senderComparison ? "me" : "other",
                     avatar: senderId?.photoUrl || senderId?.avatar
                 };
@@ -84,7 +84,7 @@ const Chat = () => {
                 FirstName, 
                 LastName: LastName || "",
                 text, 
-                timestamp,
+                timestamp: timestamp || new Date().toISOString(), // Fallback to current time
                 sender: senderId === userId ? "me" : "other",
                 avatar: photoUrl || avatar
             }]);
@@ -127,7 +127,7 @@ const Chat = () => {
         );
     }
   return (
-    <div className="max-w-4xl mx-auto my-6 h-[600px] bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg flex flex-col overflow-hidden">
+    <div className="max-w-4xl mx-auto my-6 h-[500px] bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg flex flex-col overflow-hidden">
       {/* Chat Header */}
       <div className="bg-white shadow-sm border-b border-purple-200 px-6 py-4 rounded-t-2xl">
         <div className="flex items-center gap-3">
@@ -162,11 +162,11 @@ const Chat = () => {
                 />
                 <div className="flex flex-col">
                   <div className={`flex items-center gap-2 mb-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
-                    <span className="text-xs font-medium text-gray-600">
-                      {msg.FirstName} {msg.LastName}
-                    </span>
                     <time className="text-xs text-gray-400">
-                      {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      {new Date(msg.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                      })}
                     </time>
                   </div>
                   <div className={`rounded-2xl px-4 py-3 shadow-sm ${
