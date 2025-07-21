@@ -58,12 +58,10 @@ const Project = ({ userProjects = [], onSave }) => {
       reader.readAsDataURL(file);
     }
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProjectData({ ...projectData, [name]: value });
   };
-
   const handleAddProject = () => {
     if (!projectData.title.trim()) return alert("Please enter a project title");
     if (selectedTechStack.size === 0) return alert("Please select at least one technology");
