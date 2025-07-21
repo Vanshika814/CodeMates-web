@@ -45,7 +45,7 @@ const Project = ({ userProjects = [], onSave }) => {
       reader.onloadend = async () => {
         const base64Image = reader.result;
         try {
-          const res = await axios.post(BASE_URL + "/profile/upload/project", { image: base64Image });
+          const res = await axios.post(BASE_URL + "/upload/project", { image: base64Image });
           setProjectData(prev => ({
             ...prev,
             imageUrl: res.data.imageUrl,
