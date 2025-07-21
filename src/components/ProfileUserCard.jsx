@@ -70,7 +70,7 @@ const ProfileUserCard = ({ user, onImageUpload, isEditing = false }) => {
                   <img
                     alt="Profile"
                     className="object-cover rounded-xl w-full h-64 sm:h-72 lg:h-80 cursor-pointer hover:opacity-80"
-                    src={previewUrl || photoUrl || "https://via.placeholder.com/400x400?text=Upload+Photo"}
+                    src={previewUrl || photoUrl}
                     onClick={handleUploadClick}
                   />
                   {/* Desktop hover overlay */}
@@ -130,7 +130,7 @@ const ProfileUserCard = ({ user, onImageUpload, isEditing = false }) => {
                 <img
                   alt="Card photo"
                   className="object-cover rounded-xl w-full h-64 sm:h-80 lg:h-96 flex-shrink-0"
-                  src={photoUrl || "https://via.placeholder.com/400x400?text=No+Photo"}
+                  src={photoUrl}
                 />
               )}
             </div>

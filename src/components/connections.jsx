@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { BASE_URL } from '../utils/constants';
@@ -11,11 +11,11 @@ const Connections = () => {
   const { getToken } = useAuth();
   const connections = useSelector((store) => store.connection);
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
+ const [loading, setLoading] = useState(true);
 
   const fetchConnections = async () => {
     try {
-      setLoading(true);
+       setLoading(true);
       const token = await getToken();
 
       const res = await axios.get(BASE_URL + "/user/connections", {
@@ -36,6 +36,9 @@ const Connections = () => {
     fetchConnections();
   }, []);
 
+  if (!connections) return null;
+  if (connections.length === 0)
+    return <h1 className='text-center mt-10 text-xl text-white'>No connections found!</h1>;
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[calc(100vh-80px)]">
@@ -76,7 +79,7 @@ const Connections = () => {
             <Link key={_id} to={`/chat/${_id}`}>
               <div className="flex items-center p-3 m-1 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all gap-1">
                 <img
-                  src={photoUrl || "https://via.placeholder.com/50x50?text=No+Photo"}
+                  src={photoUrl}
                   alt={`${FirstName} ${LastName}`}
                   className="w-12 h-12 rounded-full object-cover mr-3"
                 />
@@ -106,7 +109,7 @@ const Connections = () => {
             >
               <div className="flex justify-center mb-3">
                 <img
-                  src={photoUrl || "https://via.placeholder.com/80x80?text=No+Photo"}
+                  src={photoUrl}
                   alt={`${FirstName} ${LastName}`}
                   className="w-20 h-20 rounded-full object-cover ring-3 ring-purple-200"
                 />

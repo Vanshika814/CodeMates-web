@@ -139,8 +139,8 @@ const UserCard = ({ user}) => {
                 <div className="relative w-full h-80 lg:h-[290px] rounded-2xl overflow-hidden shadow-lg mt-2">
                 <Image
                   alt="Card photo"
-                  className="w-full h-full object-cover object-center"
-                  src={user.photoUrl || "https://via.placeholder.com/400x400?text=No+Photo"}
+                  className="w-full h-80 lg:h-[290px] object-cover object-center"
+                  src={user.photoUrl }
                   style={{ objectFit: 'cover' }}
                 />
                 
@@ -235,7 +235,7 @@ const UserCard = ({ user}) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden w-full max-w-md sm:max-w-lg mx-auto bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] rounded-xl p-3 sm:p-4 md:p-5 shadow-xl max-h-[350px] sm:max-h-[400px] md:min-h-[550px] overflow-y-auto scrollbar-hide"
+            className="lg:hidden w-full max-w-md sm:max-w-lg mx-auto bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] rounded-xl p-3 sm:p-4 md:p-5 shadow-xl"
           >
             <div className="flex justify-between items-center mb-3 sm:mb-4">
               <h2 className="text-white font-bold text-base sm:text-lg md:text-xl">📝 About me</h2>
@@ -291,7 +291,7 @@ const UserCard = ({ user}) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
-            className="hidden lg:block w-96 bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] rounded-xl p-6 shadow-xl min-h-[490px] overflow-y-auto scrollbar-hide"
+            className="hidden lg:block w-96 bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] rounded-xl p-6 shadow-xl max-h-[490px] overflow-y-auto scrollbar-hide"
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-white font-bold text-xl">📝 About me</h2>

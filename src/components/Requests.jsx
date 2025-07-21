@@ -121,7 +121,7 @@ const Requests = () => {
             >
               <div className="flex items-center flex-1">
                 <img
-                  src={photoUrl || "https://via.placeholder.com/50x50?text=No+Photo"}
+                  src={photoUrl}
                   alt={`${FirstName} ${LastName}`}
                   className="w-12 h-12 rounded-full object-cover mr-3"
                 />
@@ -137,30 +137,30 @@ const Requests = () => {
               </div>
               {/* Action Buttons */}
               <div className="flex gap-2 ml-3">
-                    <Button
-                    isIconOnly
-                    size="sm"
-                    variant='flat'
-                    color='secondary'
-                    onPress={() => {
-                      reviewRequest("accepted", request._id);
-                    }}
-                    className="text-white font-semibold px-4"
-                  >
-                    <FaCheck />
-                  </Button>
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    variant="flat"
-                    color='secondary'
-                    onPress={() => {
-                      reviewRequest("rejected", request._id);
-                    }}
-                    className="text-purple-400 font-semibold px-4"
-                  >
-                    <FaTimes />
-                  </Button>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant='flat'
+                  color='secondary'
+                  onPress={() => {
+                    reviewRequest("accepted", request._id);
+                  }}
+                  className=" border-purple-300"
+                >
+                  <FaCheck className="text-purple-500" />
+                </Button>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="flat"
+                  color='secondary'
+                  onPress={() => {
+                    reviewRequest("rejected", request._id);
+                  }}
+                  className=" border-purple-300"
+                >
+                  <FaTimes className="text-purple-500" />
+                </Button>
               </div>
             </div>
           );
@@ -178,7 +178,7 @@ const Requests = () => {
             >
               <div className="flex flex-col items-center flex-grow w-full">
                 <img
-                  src={photoUrl || "https://via.placeholder.com/96x96?text=No+Photo"}
+                  src={photoUrl}
                   alt={`${FirstName} ${LastName}`}
                   className="w-24 h-24 rounded-full border-4 border-purple-400 object-cover shadow-md mb-3"
                 />
