@@ -139,9 +139,9 @@ const UserCard = ({ user}) => {
                 <div className="relative w-full h-80 lg:h-[290px] rounded-2xl overflow-hidden shadow-lg mt-2">
                 <Image
                   alt="Card photo"
-                  className="w-full h-80 lg:h-[290px] object-cover object-center"
+                  className="w-full h-full object-cover object-center"
                   src={user.photoUrl }
-                  style={{ objectFit: 'cover' }}
+                  
                 />
                 
                 {/* Enhanced gradient overlay */}
