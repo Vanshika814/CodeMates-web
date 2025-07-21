@@ -7,7 +7,8 @@ CodeMates is a social networking platform designed to help developers connect, c
 - **User Authentication:** Secure user authentication and authorization using Clerk. 🔐
 - **Real-time Chat:** Instant messaging with other developers using WebSockets. 💬
 - **Project Showcasing:** Display your projects with descriptions, tech stacks, and images. 🖼️
-- **User Feed:** Stay updated with posts and activities from other developers. 📰
+- **User Feed:** Stay updated with posts and activities from other developers. 
+
 - **Connection Management:** Send and receive connection requests to build your network. 🤝
 - **Profile Management:** Create and customize your profile with relevant information. 👤
 - **Redux State Management:** Centralized state management for efficient data handling. 🗄️
@@ -126,7 +127,7 @@ npm run dev # or yarn dev
 
 ## 📸 Screenshots
 
-(Add screenshots of the application here to showcase its features and UI)
+<img width="959" height="448" alt="image" src="https://github.com/user-attachments/assets/0808bdcd-6b04-4437-b748-4435ee11346b" />
 
 ## 🤝 Contributing
 
