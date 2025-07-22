@@ -21,20 +21,12 @@ const Feed = () => {
   const getFeed = async (page = 1) => {
     try {
       dispatch(setLoading(true));
-
-      // Debug: Test backend connection first
-      console.log(`🔍 BASE_URL is: ${BASE_URL}`);
       const healthTest = await testBackendConnection();
       if (!healthTest.success) {
         console.error("❌ Backend health check failed:", healthTest.error);
         return;
       }
-
       const token = await getToken(); // fetch token from Clerk
-      console.log(`📡 Fetching feed page ${page}...`);
-      console.log(`🔑 Token available: ${!!token}`);
-
-      // Debug: Test authenticated endpoint
       const authTest = await testAuthenticatedEndpoint(getToken);
       if (!authTest.success) {
         console.error("❌ Auth test failed:", authTest.error);
@@ -50,8 +42,6 @@ const Feed = () => {
         },
         withCredentials: true,
       });
-      console.log("📋 Feed response:", res.data);
-      console.log("👥 Number of users in feed:", res.data?.length || 0);
 
       if (page === 1) {
         dispatch(addFeed(res?.data || []));

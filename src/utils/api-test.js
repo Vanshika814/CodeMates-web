@@ -3,7 +3,6 @@ import { BASE_URL } from "./constants";
 // Simple function to test if backend is reachable
 export const testBackendConnection = async () => {
   try {
-    console.log("🔍 Testing backend connection to:", BASE_URL);
 
     const response = await fetch(`${BASE_URL}/health`, {
       method: "GET",
@@ -14,7 +13,6 @@ export const testBackendConnection = async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("✅ Backend health check successful:", data);
       return { success: true, data };
     } else {
       console.error(
@@ -37,7 +35,7 @@ export const testBackendConnection = async () => {
 export const testAuthenticatedEndpoint = async (getToken) => {
   try {
     const token = await getToken();
-    console.log("🔍 Testing authenticated endpoint with token...");
+
 
     const response = await fetch(`${BASE_URL}/auth-status`, {
       method: "GET",
@@ -49,7 +47,7 @@ export const testAuthenticatedEndpoint = async (getToken) => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("✅ Auth test successful:", data);
+      
       return { success: true, data };
     } else {
       console.error(

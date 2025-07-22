@@ -65,12 +65,8 @@ const AutoSync = () => {
       }
       
       try {
-        // Log Clerk state and token
-        console.log("🔍 Clerk isLoaded:", isLoaded);
-        console.log("🔍 Clerk isSignedIn:", isSignedIn);
-        console.log("🔍 Clerk user:", user);
+      
         const token = await getToken();
-        console.log("🔍 Token from Clerk:", token ? `${token.substring(0, 20)}...` : "No token");
         
         if (!token) {
           // Wait and retry if token is not ready
@@ -79,20 +75,17 @@ const AutoSync = () => {
           }
           return;
         }
-        // Add a small delay to ensure token is fully propagated
         if (retryCount === 0) {
-          console.log("⏳ First attempt - waiting 1 second for token to propagate...");
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
-        // Log axios headers
+        
         const headers = { Authorization: `Bearer ${token}` };
-        console.log("🔍 Axios headers:", headers);
-        // Try to fetch profile from backend
+        
         const response = await axios.get(`${BASE_URL}/profile/view`, {
           headers
         });
         if (response.data) {
-          console.log("✅ AutoSync: Profile loaded successfully");
+          
           dispatch(addUser(response.data));
           hasSucceededRef.current = true;
         }
@@ -107,11 +100,11 @@ const AutoSync = () => {
         if (error.response && error.response.status === 404) {
           try {
             const token = await getToken();
-            console.log("🔄 AutoSync: Attempting to create user in MongoDB...");
+            
             await axios.post(`${BASE_URL}/auto-sync`, {}, {
               headers: { Authorization: `Bearer ${token}` },
             });
-            // After auto-sync, retry fetching profile
+            
             setTimeout(() => setRetryCount(prev => prev + 1), 500);
             return;
           } catch (syncErr) {

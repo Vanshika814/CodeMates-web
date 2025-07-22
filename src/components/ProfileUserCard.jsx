@@ -9,8 +9,6 @@ const ProfileUserCard = ({ user, onImageUpload, isEditing = false }) => {
   const { FirstName, LastName, age, gender, photoUrl, socialLinks = {} } = user;
   const { github, linkedin, twitter } = socialLinks;
 
-  // console.log("[ProfileUserCard] photoUrl:", photoUrl);
-
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);

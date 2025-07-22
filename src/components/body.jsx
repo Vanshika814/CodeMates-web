@@ -12,15 +12,7 @@ const ClerkSessionMonitor = () => {
   const { isSignedIn } = useAuth();
 
   React.useEffect(() => {
-    console.log("🔐 Clerk Session Monitor:");
-    console.log("Session State:", {
-      isLoaded,
-      isSignedIn,
-      hasUser: !!user,
-      userId: user?.id,
-      userEmail: user?.emailAddresses?.[0]?.emailAddress
-    });
-
+   
     // Check for session restoration issues
     if (isLoaded && !isSignedIn) {
       console.log("⚠️ Clerk loaded but user is not signed in - possible session loss");

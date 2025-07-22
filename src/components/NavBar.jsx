@@ -63,13 +63,7 @@ const MainNavbar = () => {
   React.useEffect(() => {
     if (user) {
       console.log('User object:', user);
-      console.log('User imageUrl:', user.imageUrl);
-      console.log('User profileImageUrl:', user.profileImageUrl);
-      console.log('User hasImage:', user.hasImage);
-      console.log('User fullName:', user.fullName);
-      console.log('User username:', user.username);
-      console.log('User email:', user.emailAddresses[0]?.emailAddress);
-      console.log('User externalAccounts:', user.externalAccounts);
+      
     }
   }, [user]);
 

@@ -29,7 +29,6 @@ const Profile = () => {
 
       // Fallback: fetch profile if AutoSync failed or data missing
       try {
-        console.log("📋 Profile: AutoSync data not available, fetching profile...");
         setLoading(true);
         const token = await getToken();
 

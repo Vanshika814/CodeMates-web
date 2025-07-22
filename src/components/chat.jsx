@@ -104,17 +104,9 @@ const Chat = () => {
             userId, 
             targetId, 
             text: newMessage
-        });
-        
-        // ✅ Remove immediate local state update to prevent duplicates
-        // Let the socket handle adding the message via messageReceived event
-        
+        });        
         setNewMessage("");
     }
-
-
-
-    // console.log(targetId);
     // Add loading guard before rendering
     if (!userId || !user?.FirstName) {
         return (
