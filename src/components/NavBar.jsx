@@ -103,7 +103,7 @@ const MainNavbar = () => {
         <NavbarBrand className="flex-grow-0">
           <RouterLink to={isSignedIn ? "/feed" : "/"} className="flex items-center gap-2">
             <AcmeLogo />
-            <p className="font-bold text-xl text-white">DevTinder</p>
+            <p className="font-bold text-xl text-white">CodeMates</p>
           </RouterLink>
         </NavbarBrand>
       </NavbarContent>
