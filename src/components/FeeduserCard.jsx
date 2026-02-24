@@ -128,10 +128,10 @@ const UserCard = ({ user}) => {
   };
 
   return (
-    <div className="flex justify-center items-start min-h-screen p-4 mt-6">
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-1 max-w-6xl w-full justify-center items-start">
+    <div className="flex justify-center items-start min-h-[calc(100vh-80px)] px-4 md:px-8 lg:px-12 mt-14 lg:mt-24">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 max-w-5xl xl:max-w-6xl w-full justify-center items-start">
         {/* Main Card */}
-        <Card className="w-full max-w-sm lg:w-72 h-[530px] lg:h-[490px] flex flex-col flex-shrink-0 shadow-2xl border-0 overflow-hidden">
+        <Card className="w-full max-w-sm sm:max-w-md lg:max-w-none lg:w-[320px] xl:w-[310px] h-[580px] lg:h-[560px] flex flex-col flex-shrink-0 shadow-2xl border-0 overflow-hidden">
           <CardHeader className="pb-0 pt-2 px-4 flex-col items-start flex-shrink-0">
           </CardHeader>
           <CardBody className="overflow-hidden py-0 px-4 relative flex-1 flex flex-col">
@@ -201,7 +201,7 @@ const UserCard = ({ user}) => {
               )}
               
               {/* Action Buttons */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full flex flex-col items-center z-10">
+              <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 w-full flex flex-col items-center z-10">
                 <span className="text-xs text-white mb-2">ready to code?</span>
                 <div className="flex items-center justify-center gap-2">
                   <Button
@@ -291,7 +291,7 @@ const UserCard = ({ user}) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
-            className="hidden lg:block w-96 bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] rounded-xl p-6 shadow-xl max-h-[490px] overflow-y-auto scrollbar-hide"
+            className="hidden lg:block w-[420px] xl:w-[460px] bg-gradient-to-br from-[#1e1e1e] to-[#2f1a3c] rounded-xl p-6 shadow-xl max-h-[560px] overflow-y-auto scrollbar-hide"
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-white font-bold text-xl">📝 About me</h2>

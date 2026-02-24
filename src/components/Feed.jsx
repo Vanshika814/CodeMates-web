@@ -85,8 +85,8 @@ const Feed = () => {
   // Simplified loading state - covers both profile and initial feed loading
   if (!userProfile || !userProfile._id || (feedState.isLoading && feedState.users.length === 0)) {
     return (
-      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
-        <div className="flex flex-col items-center justify-center">
+      <div className="flex justify-center items-center h-[calc(100vh-80px)] px-4 sm:px-6">
+        <div className="flex flex-col items-center justify-center text-center">
           <CircularProgress aria-label="Loading feed..." size="lg" color="secondary"/>
           <p className="text-purple-700 font-medium mt-4">Loading feed...</p>
         </div>
@@ -96,8 +96,8 @@ const Feed = () => {
 
   if (feedState.users.length === 0 && !feedState.isLoading) {
     return (
-      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
-        <div className="flex flex-col items-center justify-center">
+      <div className="flex justify-center items-center h-[calc(100vh-80px)] px-4 sm:px-6">
+        <div className="flex flex-col items-center justify-center text-center">
           <p className="text-lg">No users available in feed</p>
           <p className="text-sm text-gray-500">
             Either all users have been swiped or no other users exist
@@ -114,19 +114,21 @@ const Feed = () => {
   }
 
   return (
-    <div>
-      {feedState.users.length > 0 && (
-        <FeedUserCard user={feedState.users[0]} variant="feed" />
-      )}
-      {feedState.isLoading && feedState.users.length > 0 && (
-        <div className="flex justify-center items-center mt-4">
-          <div className="flex flex-col items-center justify-center">
-            <CircularProgress aria-label="Loading more..." size="md" color="secondary"/>
-            <p className="text-purple-700 font-medium mt-2 text-sm">Loading more users...</p>
+    <main className="w-full min-h-[calc(100vh-80px)] flex flex-col items-center justify-center px-4 sm:px-6 md:px-8">
+      <div className="w-full max-w-6xl flex flex-col items-center">
+        {feedState.users.length > 0 && (
+          <FeedUserCard user={feedState.users[0]} variant="feed" />
+        )}
+        {feedState.isLoading && feedState.users.length > 0 && (
+          <div className="flex justify-center items-center mt-4">
+            <div className="flex flex-col items-center justify-center text-center">
+              <CircularProgress aria-label="Loading more..." size="md" color="secondary"/>
+              <p className="text-purple-700 font-medium mt-2 text-sm">Loading more users...</p>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </main>
   );
 };
 

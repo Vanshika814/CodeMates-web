@@ -60,9 +60,9 @@ const ProfileUserCard = ({ user, onImageUpload, isEditing = false }) => {
 
   return (
     <div className="flex justify-center items-start p-2 sm:p-4 h-full mt-2 sm:mt-4">
-      <Card className="w-72 sm:w-72 lg:w-72 h-auto flex flex-col">
+      <Card className="w-72 sm:w-72 lg:w-72 h-auto min-h-[678px] flex flex-col">
         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start flex-shrink-0"></CardHeader>
-        <CardBody className="overflow-visible py-2 px-4 relative flex-1 flex flex-col">
+        <CardBody className="overflow-visible pt-2 pb-4 px-4 relative flex-1 flex flex-col">
           <div className="flex-1 flex flex-col gap-2">
             <div className="flex flex-col items-center justify-center w-full">
               {isEditing ? (
@@ -131,7 +131,7 @@ const ProfileUserCard = ({ user, onImageUpload, isEditing = false }) => {
               ) : (
                 <img
                   alt="Card photo"
-                  className="object-cover rounded-xl w-full h-64 sm:h-80 lg:h-96 flex-shrink-0"
+                  className="object-cover rounded-xl w-full h-72 sm:h-80 lg:h-[420px] flex-shrink-0"
                   src={
                     (photoUrl || "https://res.cloudinary.com/dgfirvf4b/image/upload/v1753101173/download_8_yi0fsk.jpg")
                   }

@@ -120,7 +120,7 @@ const EditProfile = ({ user }) => {
     <>
       <ToastProvider placement={placement} toastOffset={placement.includes("top") ? 60 : 0} />
 
-      <div className="flex flex-col lg:flex-row gap-3 lg:gap-6 justify-center items-start p-4">
+      <div className="flex flex-col lg:flex-row gap-3 lg:gap-6 justify-center items-stretch p-4 min-h-[calc(100vh-80px)]">
         <div className="w-full lg:w-auto flex justify-center">
           <ProfileUserCard 
             user={{ FirstName, LastName, age, gender, about, photoUrl, socialLinks: { github, linkedin, twitter }, location: location.city + ", " + location.country }} 
@@ -130,7 +130,7 @@ const EditProfile = ({ user }) => {
             }}
           />
         </div>
-        <Card className="w-full lg:w-3/5 mt-4 lg:mt-8 p-4 min-h-[600px]">
+        <Card className="w-full lg:w-3/5 mt-4 lg:mt-8 p-4 min-h-[650px] h-full">
           <CardBody className='pt-0 '>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
               <h1 className="text-xl sm:text-2xl font-bold p-2 sm:p-3">
